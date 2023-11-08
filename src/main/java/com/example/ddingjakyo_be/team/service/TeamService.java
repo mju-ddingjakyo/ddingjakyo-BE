@@ -34,16 +34,19 @@ public class TeamService {
   }
 
   public List<GetAllTeamResponse> getAllTeam() {
-    List<Team> teams = teamRepository.findAll();
     List<GetAllTeamResponse> getAllTeamResponses = new ArrayList<>();
+    addTeamResponse(getAllTeamResponses);
+    return getAllTeamResponses;
+  }
+
+  private void addTeamResponse(List<GetAllTeamResponse> getAllTeamResponses){
+    List<Team> teams = teamRepository.findAll();
     for (Team team : teams) {
       List<Member> members = belongService.findAllByTeam(team);
       List<MemberProfileResponse> memberProfileResponses = members.stream()
-                                                                  .map(MemberProfileResponse::from)
-                                                                  .collect(Collectors.toList());
+          .map(MemberProfileResponse::from)
+          .collect(Collectors.toList());
       getAllTeamResponses.add(GetAllTeamResponse.of(team,memberProfileResponses));
     }
-
-    return getAllTeamResponses;
   }
 }
