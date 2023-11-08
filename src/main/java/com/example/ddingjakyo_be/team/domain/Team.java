@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,11 +31,19 @@ public class Team extends BaseEntity {
 
   private String content;
 
-  private String kakaoRoomId;
-
   @Enumerated(EnumType.STRING)
   private String matchStatus;
 
   @Enumerated(EnumType.STRING)
   private String gender;
+
+  @Builder
+  public Team(String name, int memberCount, int leaderId, String content, String matchStatus, String gender) {
+    this.name = name;
+    this.memberCount = memberCount;
+    this.leaderId = leaderId;
+    this.content = content;
+    this.matchStatus = matchStatus;
+    this.gender = gender;
+  }
 }
