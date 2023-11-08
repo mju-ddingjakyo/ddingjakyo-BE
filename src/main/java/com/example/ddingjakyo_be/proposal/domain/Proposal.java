@@ -1,6 +1,7 @@
 package com.example.ddingjakyo_be.proposal.domain;
 
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
+import com.example.ddingjakyo_be.team.domain.Team;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,9 +33,9 @@ public class Proposal extends BaseEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "SENDER_ID")
-  private Team SenderTeam;
+  private Team senderTeam;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "RECIVER_ID")
-  private Team ReciverTeam;
+  @JoinColumn(name = "RECEIVER_ID")
+  private Team receiverTeam;
 }

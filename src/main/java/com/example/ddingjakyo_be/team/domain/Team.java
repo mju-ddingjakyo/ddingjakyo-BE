@@ -1,12 +1,17 @@
 package com.example.ddingjakyo_be.team.domain;
 
+import com.example.ddingjakyo_be.belong.entity.Belong;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
+import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +41,15 @@ public class Team extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private String gender;
+
+  @OneToMany(mappedBy = "senderTeam")
+  private final List<Proposal> sendProposals = new ArrayList<>();
+
+  @OneToMany(mappedBy = "receiverTeam")
+  private final List<Proposal> receiveProposals = new ArrayList<>();
+
+  @OneToMany(mappedBy = "team")
+  private final List<Belong> belongs = new ArrayList<>();
 
   @Builder
   public Team(String name, int memberCount, int leaderId, String content, String matchStatus, String gender) {
