@@ -2,7 +2,9 @@ package com.example.ddingjakyo_be.team.domain;
 
 import com.example.ddingjakyo_be.belong.entity.Belong;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
+import com.example.ddingjakyo_be.common.entity.Gender;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
+import com.example.ddingjakyo_be.team.constant.MatchStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -37,10 +39,10 @@ public class Team extends BaseEntity {
   private String content;
 
   @Enumerated(EnumType.STRING)
-  private String matchStatus;
+  private MatchStatus matchStatus;
 
   @Enumerated(EnumType.STRING)
-  private String gender;
+  private Gender gender;
 
   @OneToMany(mappedBy = "senderTeam")
   private final List<Proposal> sendProposals = new ArrayList<>();
@@ -57,7 +59,7 @@ public class Team extends BaseEntity {
     this.memberCount = memberCount;
     this.leaderId = leaderId;
     this.content = content;
-    this.matchStatus = matchStatus;
-    this.gender = gender;
+    this.matchStatus = MatchStatus.valueOf(matchStatus);
+    this.gender = Gender.valueOf(gender);
   }
 }

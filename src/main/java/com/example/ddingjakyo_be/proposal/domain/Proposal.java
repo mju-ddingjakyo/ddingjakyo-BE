@@ -1,6 +1,7 @@
 package com.example.ddingjakyo_be.proposal.domain;
 
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
+import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.team.domain.Team;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +30,7 @@ public class Proposal extends BaseEntity {
   private String kakaoRoomURL;
 
   @Enumerated(EnumType.STRING)
-  private String proposalStatus;
+  private ProposalStatus proposalStatus;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "SENDER_ID")
