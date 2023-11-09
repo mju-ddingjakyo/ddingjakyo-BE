@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GetAllTeamResponse {
+public class GetOneTeamResponse {
 
   private String name;
 
@@ -17,29 +17,32 @@ public class GetAllTeamResponse {
 
   private int memberCount;
 
+  private int leaderId;
+
   private String matchStatus;
 
-  private List<TeamMemberProfileResponse> teamMembersProfile;
-
+  private List<TeamMemberResponse> teamMembers;
 
   @Builder
-  public GetAllTeamResponse(String name, String gender, String content, int memberCount, String matchStatus, List<TeamMemberProfileResponse> teamMembersProfile) {
+  public GetOneTeamResponse(String name, String gender, String content, int memberCount, int leaderId, String matchStatus, List<TeamMemberResponse> teamMembers) {
     this.name = name;
     this.gender = gender;
     this.content = content;
     this.memberCount = memberCount;
+    this.leaderId = leaderId;
     this.matchStatus = matchStatus;
-    this.teamMembersProfile = teamMembersProfile;
+    this.teamMembers = teamMembers;
   }
 
-  public static GetAllTeamResponse of(Team team, List<TeamMemberProfileResponse> teamMembersProfile) {
-    return GetAllTeamResponse.builder()
+  public static GetOneTeamResponse of(Team team, List<TeamMemberResponse> teamMembers) {
+    return GetOneTeamResponse.builder()
         .name(team.getName())
         .gender(team.getGender())
         .content(team.getContent())
         .memberCount(team.getMemberCount())
+        .leaderId(team.getLeaderId())
         .matchStatus(team.getMatchStatus())
-        .teamMembersProfile(teamMembersProfile)
-        .build();
+        .teamMembers(teamMembers)
+        .build()
   }
 }
