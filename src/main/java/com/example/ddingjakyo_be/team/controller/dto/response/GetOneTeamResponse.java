@@ -11,7 +11,7 @@ public class GetOneTeamResponse {
 
   private String name;
 
-  private String gender;
+  private int gender;
 
   private String content;
 
@@ -24,7 +24,7 @@ public class GetOneTeamResponse {
   private List<TeamMemberResponse> teamMembers;
 
   @Builder
-  public GetOneTeamResponse(String name, String gender, String content, int memberCount, int leaderId, String matchStatus, List<TeamMemberResponse> teamMembers) {
+  public GetOneTeamResponse(String name, int gender, String content, int memberCount, int leaderId, String matchStatus, List<TeamMemberResponse> teamMembers) {
     this.name = name;
     this.gender = gender;
     this.content = content;
@@ -37,12 +37,12 @@ public class GetOneTeamResponse {
   public static GetOneTeamResponse of(Team team, List<TeamMemberResponse> teamMembers) {
     return GetOneTeamResponse.builder()
         .name(team.getName())
-        .gender(team.getGender())
+        .gender(team.getGender().getIdentifier())
         .content(team.getContent())
         .memberCount(team.getMemberCount())
         .leaderId(team.getLeaderId())
-        .matchStatus(team.getMatchStatus())
+        .matchStatus(String.valueOf(team.getMatchStatus()))
         .teamMembers(teamMembers)
-        .build()
+        .build();
   }
 }
