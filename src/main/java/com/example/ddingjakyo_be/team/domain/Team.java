@@ -54,7 +54,8 @@ public class Team extends BaseEntity {
   private final List<Belong> belongs = new ArrayList<>();
 
   @Builder
-  public Team(String name, int memberCount, int leaderId, String content, String matchStatus, String gender) {
+  public Team(String name, int memberCount, int leaderId, String content, String matchStatus,
+      String gender) {
     this.name = name;
     this.memberCount = memberCount;
     this.leaderId = leaderId;

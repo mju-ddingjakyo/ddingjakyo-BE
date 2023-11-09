@@ -26,7 +26,7 @@ public class CreateTeamRequest {
   public Team toEntity(MatchStatus matchStatus, int leaderId) {
     return Team.builder()
         .name(name)
-        .gender("MALE")
+        .gender("MALE") //gender를 0, 1로 받아올 지 글자로 받아올진 결정해야함.
         .memberCount(memberCount)
         .leaderId(leaderId)
         .content(content)
