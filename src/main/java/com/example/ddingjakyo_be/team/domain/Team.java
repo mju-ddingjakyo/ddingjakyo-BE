@@ -63,4 +63,10 @@ public class Team extends BaseEntity {
     this.matchStatus = matchStatus;
     this.gender = gender;
   }
+
+  public void update(String name, String content, int memberCount) {
+    this.name = name;
+    this.content = content;
+    this.memberCount = memberCount;
+  }
 }
