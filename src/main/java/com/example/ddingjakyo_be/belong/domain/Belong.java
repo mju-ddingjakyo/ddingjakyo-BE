@@ -1,4 +1,4 @@
-package com.example.ddingjakyo_be.belong.entity;
+package com.example.ddingjakyo_be.belong.domain;
 
 import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.team.domain.Team;
@@ -27,4 +27,13 @@ public class Belong {
   @ManyToOne
   @JoinColumn(name = "TEAM_ID")
   private Team team;
+
+  public static Belong belongTo(Member member, Team team) {
+    Belong belong = new Belong();
+    belong.member = member;
+    belong.team = team;
+    return belong;
+  }
+
+
 }
