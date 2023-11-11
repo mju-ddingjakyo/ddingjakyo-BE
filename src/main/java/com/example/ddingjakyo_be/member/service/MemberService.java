@@ -36,11 +36,11 @@ public class MemberService {
     return MemberProfileResponse.from(member);
   }
 
-  private Member findMemberById(Long memberId) {
+  public Member findMemberById(Long memberId) {
     return memberRepository.findById(memberId).orElseThrow(IllegalAccessError::new);
   }
 
-  private Member findMemberByEmail(String email) {
+  public Member findMemberByEmail(String email) {
     return memberRepository.findMemberByEmail(email);
   }
 
