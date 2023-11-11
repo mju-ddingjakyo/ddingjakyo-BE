@@ -12,9 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,4 +39,12 @@ public class Proposal extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "RECEIVER_ID")
   private Team receiverTeam;
+
+  @Builder
+  public Proposal(String kakaoRoomURL, ProposalStatus proposalStatus, Team senderTeam, Team receiverTeam){
+    this.kakaoRoomURL = kakaoRoomURL;
+    this.proposalStatus = proposalStatus;
+    this.senderTeam = senderTeam;
+    this.receiverTeam = receiverTeam;
+  }
 }
