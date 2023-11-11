@@ -2,7 +2,6 @@ package com.example.ddingjakyo_be.belong.entity;
 
 import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.team.domain.Team;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
