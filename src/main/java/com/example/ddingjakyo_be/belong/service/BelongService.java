@@ -30,11 +30,7 @@ public class BelongService {
     List<Belong> belongs = belongRepository.findByTeam(team);
     // 기존의 모든 Belong 삭제
     belongRepository.deleteAll(belongs);
-
-    for (Member member : members) {
-      Belong belong = Belong.belongTo(member, team);
-      belongRepository.save(belong);
-    }
-
+    // 연관관계 다시 설정
+    doBelong(members, team);
   }
 }
