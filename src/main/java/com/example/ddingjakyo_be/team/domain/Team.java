@@ -54,13 +54,19 @@ public class Team extends BaseEntity {
   private final List<Belong> belongs = new ArrayList<>();
 
   @Builder
-  public Team(String name, int memberCount, int leaderId, String content, String matchStatus,
-      String gender) {
+  public Team(String name, int memberCount, int leaderId, String content, MatchStatus matchStatus,
+      Gender gender) {
     this.name = name;
     this.memberCount = memberCount;
     this.leaderId = leaderId;
     this.content = content;
-    this.matchStatus = MatchStatus.valueOf(matchStatus);
-    this.gender = Gender.valueOf(gender);
+    this.matchStatus = matchStatus;
+    this.gender = gender;
+  }
+
+  public void update(String name, String content, int memberCount) {
+    this.name = name;
+    this.content = content;
+    this.memberCount = memberCount;
   }
 }
