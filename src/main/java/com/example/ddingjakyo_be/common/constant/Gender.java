@@ -1,4 +1,4 @@
-package com.example.ddingjakyo_be.common.entity;
+package com.example.ddingjakyo_be.common.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
