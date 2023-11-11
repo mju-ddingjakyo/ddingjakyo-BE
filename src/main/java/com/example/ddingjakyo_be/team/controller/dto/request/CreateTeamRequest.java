@@ -1,8 +1,6 @@
 package com.example.ddingjakyo_be.team.controller.dto.request;
 
-import com.example.ddingjakyo_be.belong.entity.Belong;
-import com.example.ddingjakyo_be.common.entity.Gender;
-import com.example.ddingjakyo_be.member.domain.Member;
+import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.team.constant.MatchStatus;
 import com.example.ddingjakyo_be.team.domain.Team;
 import java.util.List;
