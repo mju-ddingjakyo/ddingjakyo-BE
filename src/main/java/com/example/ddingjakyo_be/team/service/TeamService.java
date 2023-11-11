@@ -1,6 +1,9 @@
 package com.example.ddingjakyo_be.team.service;
 
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.domain.Member;
+import com.example.ddingjakyo_be.member.service.MemberService;
 import com.example.ddingjakyo_be.team.constant.MatchStatus;
 import com.example.ddingjakyo_be.team.controller.dto.request.CreateTeamRequest;
 import com.example.ddingjakyo_be.team.controller.dto.request.UpdateTeamRequest;
@@ -24,8 +27,6 @@ public class TeamService {
 
   private final MemberService memberService;
 
-  private final BelongService belongService;
-
   public void createTeam(CreateTeamRequest createTeamRequest) {
     List<Member> members = memberService.findMembersByEmail(createTeamRequest.getMembersEmail());
     //한명의 유저는 하나의 팀만 생성 가능하다
@@ -46,11 +47,11 @@ public class TeamService {
   @Transactional(readOnly = true)
   public GetOneTeamResponse getOneTeam(Long teamId) {
     Team team = findTeamById(teamId);
-    List<Member> members = belongService.findMembersByTeam(team);
-    List<TeamMemberResponse> teamMembers = members.stream()
-        .map(TeamMemberResponse::from)
+    List<Member> members = findMembersByTeam(team);
+    List<MemberResponse> membersResponse = members.stream()
+        .map(MemberResponse::from)
         .collect(Collectors.toList());
-    return GetOneTeamResponse.of(team, teamMembers);
+    return GetOneTeamResponse.of(team, membersResponse);
   }
 
   public void deleteTeam(Long teamId) {
@@ -79,11 +80,17 @@ public class TeamService {
   private void addTeamResponse(List<GetAllTeamResponse> getAllTeamResponses) {
     List<Team> teams = teamRepository.findAll();
     for (Team team : teams) {
-      List<Member> members = belongService.findMembersByTeam(team);
-      List<TeamMemberProfileResponse> teamMembersProfile = members.stream()
-          .map(TeamMemberProfileResponse::from)
+      List<Member> members = findMembersByTeam(team);
+      List<MemberProfileResponse> membersProfile = members.stream()
+          .map(MemberProfileResponse::from)
           .collect(Collectors.toList());
-      getAllTeamResponses.add(GetAllTeamResponse.of(team, teamMembersProfile));
+      getAllTeamResponses.add(GetAllTeamResponse.of(team, membersProfile));
     }
+  }
+
+  private List<Member> findMembersByTeam(Team team){
+    List<Member> members = new ArrayList<>();
+    team.getBelongs().forEach(belong -> members.add(belong.getMember()));
+    return members;
   }
 }

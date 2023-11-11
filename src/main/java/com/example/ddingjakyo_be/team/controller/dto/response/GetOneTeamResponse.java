@@ -1,6 +1,8 @@
 package com.example.ddingjakyo_be.team.controller.dto.response;
 
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.team.domain.Team;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,20 +23,20 @@ public class GetOneTeamResponse {
 
   private String matchStatus;
 
-  private List<TeamMemberResponse> teamMembers;
+  private List<MemberResponse> membersResponse;
 
   @Builder
-  public GetOneTeamResponse(String name, int gender, String content, int memberCount, int leaderId, String matchStatus, List<TeamMemberResponse> teamMembers) {
+  public GetOneTeamResponse(String name, int gender, String content, int memberCount, int leaderId, String matchStatus, List<MemberResponse> membersResponse) {
     this.name = name;
     this.gender = gender;
     this.content = content;
     this.memberCount = memberCount;
     this.leaderId = leaderId;
     this.matchStatus = matchStatus;
-    this.teamMembers = teamMembers;
+    this.membersResponse = membersResponse;
   }
 
-  public static GetOneTeamResponse of(Team team, List<TeamMemberResponse> teamMembers) {
+  public static GetOneTeamResponse of(Team team, List<MemberResponse> membersResponse) {
     return GetOneTeamResponse.builder()
         .name(team.getName())
         .gender(team.getGender().getIdentifier())
@@ -42,7 +44,7 @@ public class GetOneTeamResponse {
         .memberCount(team.getMemberCount())
         .leaderId(team.getLeaderId())
         .matchStatus(String.valueOf(team.getMatchStatus()))
-        .teamMembers(teamMembers)
+        .membersResponse(membersResponse)
         .build();
   }
 }
