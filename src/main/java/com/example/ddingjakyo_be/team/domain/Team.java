@@ -1,6 +1,6 @@
 package com.example.ddingjakyo_be.team.domain;
 
-import com.example.ddingjakyo_be.belong.entity.Belong;
+import com.example.ddingjakyo_be.belong.domain.Belong;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
 import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
