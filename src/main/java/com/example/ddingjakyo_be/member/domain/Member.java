@@ -2,9 +2,6 @@ package com.example.ddingjakyo_be.member.domain;
 
 import com.example.ddingjakyo_be.belong.entity.Belong;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
-import com.example.ddingjakyo_be.common.entity.Gender;
-import com.example.ddingjakyo_be.member.controller.dto.request.MemberProfileRequest;
-import com.example.ddingjakyo_be.member.service.MemberService;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
