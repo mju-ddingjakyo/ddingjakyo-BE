@@ -46,7 +46,12 @@ public class MemberService {
 
   public void updateMemberProfile(MemberProfileRequest updateMemberProfile, Long memberId) {
     Member member = findMemberById(memberId);
-    member.update(updateMemberProfile);
+    member.changeNickname(updateMemberProfile.getNickname());
+    member.changeMajor(updateMemberProfile.getMajor());
+    member.changeAge(updateMemberProfile.getAge());
+    member.changeMbti(updateMemberProfile.getMbti());
+    member.changeIntroduction(updateMemberProfile.getIntroduction());
+    member.changeProfileImage(updateMemberProfile.getProfileImage());
   }
 
   public void deleteMember(Long memberId) {

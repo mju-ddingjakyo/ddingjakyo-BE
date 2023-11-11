@@ -1,7 +1,9 @@
 package com.example.ddingjakyo_be.member.domain;
 
 import com.example.ddingjakyo_be.belong.entity.Belong;
+import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
+import com.example.ddingjakyo_be.member.controller.dto.request.MemberProfileRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -63,12 +65,27 @@ public class Member extends BaseEntity {
     this.profileImage = profileImage;
   }
 
-  public void update(MemberProfileRequest updateMember) {
-    this.nickname = updateMember.getNickname();
-    this.major = updateMember.getMajor();
-    this.age = updateMember.getAge();
-    this.mbti = updateMember.getMbti();
-    this.introduction = updateMember.getIntroduction();
-    this.profileImage = updateMember.getProfileImage();
+  public void changeNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public void changeMajor(String major) {
+    this.major = major;
+  }
+
+  public void changeAge(int age) {
+    this.age = age;
+  }
+
+  public void changeMbti(String mbti) {
+    this.mbti = mbti;
+  }
+
+  public void changeIntroduction(String introduction) {
+    this.introduction = introduction;
+  }
+
+  public void changeProfileImage(String profileImage) {
+    this.profileImage = profileImage;
   }
 }
