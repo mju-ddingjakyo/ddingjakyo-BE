@@ -1,12 +1,13 @@
 package com.example.ddingjakyo_be.member.service;
 
+import com.example.ddingjakyo_be.belong.service.BelongService;
 import com.example.ddingjakyo_be.member.controller.dto.request.MemberProfileRequest;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.member.repository.MemberRepository;
 import com.example.ddingjakyo_be.team.service.TeamService;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +27,9 @@ public class MemberService {
     memberRepository.save(member);
   }
 
-  public MemberProfileResponse getMemberProfileById(Long memberId) {
+  public MemberResponse getMemberProfileById(Long memberId) {
     Member member = findMemberById(memberId);
-    return MemberProfileResponse.from(member);
+    return MemberResponse.from(member);
   }
 
   public MemberProfileResponse getMemberProfileByEmail(String email) {

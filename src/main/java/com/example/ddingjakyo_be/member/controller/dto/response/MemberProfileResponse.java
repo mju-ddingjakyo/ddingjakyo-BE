@@ -11,34 +11,21 @@ public class MemberProfileResponse {
 
   private String nickname;
 
-  private String major;
-
-  private String introduction;
-
-  private int age;
-
-  private String mbti;
+  private String email;
 
   private String profileImage;
 
   @Builder
-  public MemberProfileResponse(String nickname, String major, String introduction, int age,
-      String mbti, String profileImage) {
+  public MemberProfileResponse(String nickname, String email, String profileImage) {
     this.nickname = nickname;
-    this.major = major;
-    this.introduction = introduction;
-    this.age = age;
-    this.mbti = mbti;
+    this.email = email;
     this.profileImage = profileImage;
   }
 
   public static MemberProfileResponse from(Member member) {
     return MemberProfileResponse.builder()
         .nickname(member.getNickname())
-        .major(member.getMajor())
-        .introduction(member.getIntroduction())
-        .age(member.getAge())
-        .mbti(member.getMbti())
+        .email(member.getEmail())
         .profileImage(member.getProfileImage())
         .build();
   }
