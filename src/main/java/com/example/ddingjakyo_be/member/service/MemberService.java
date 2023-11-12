@@ -18,10 +18,6 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
 
-  private final TeamService teamService;
-
-  private final BelongService belongService;
-
   public void createMember(MemberProfileRequest memberProfileRequest) {
     Member member = memberProfileRequest.toEntity();
     memberRepository.save(member);
