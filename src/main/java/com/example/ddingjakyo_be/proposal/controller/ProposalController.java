@@ -3,6 +3,7 @@ package com.example.ddingjakyo_be.proposal.controller;
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
+import com.example.ddingjakyo_be.proposal.controller.dto.response.SendProposalResponse;
 import com.example.ddingjakyo_be.proposal.service.ProposalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,10 @@ public class ProposalController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @GetMapping("/proposal/sender")
-  public ResponseEntity<ResponseMessage>
+  @GetMapping("/proposal/{teamid}/send-proposal")
+  public ResponseEntity<ResponseMessage> getSendProposal(@PathVariable("teamid") Long teamId){
+    SendProposalResponse sendProposalResponse = proposalService.getSendProposal(teamId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sendProposalResponse);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
 }
