@@ -2,6 +2,7 @@ package com.example.ddingjakyo_be.member.controller;
 
 import com.example.ddingjakyo_be.member.controller.dto.request.MemberProfileRequest;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @GetMapping("/member/{memberId}")
-  public MemberProfileResponse getMemberById(@PathVariable Long memberId) {
+  public MemberResponse getMemberById(@PathVariable Long memberId) {
     return memberService.getMemberProfileById(memberId);
   }
 
