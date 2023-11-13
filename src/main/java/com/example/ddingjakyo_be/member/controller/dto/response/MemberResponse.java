@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberResponse {
 
+  private Long id;
+
   private String nickname;
 
   private String major;
@@ -22,8 +24,9 @@ public class MemberResponse {
   private String profileImage;
 
   @Builder
-  public MemberResponse(String nickname, String major, String introduction, int age,
+  public MemberResponse(Long id, String nickname, String major, String introduction, int age,
       String mbti, String profileImage) {
+    this.id = id;
     this.nickname = nickname;
     this.major = major;
     this.introduction = introduction;
@@ -34,6 +37,7 @@ public class MemberResponse {
 
   public static MemberResponse from(Member member) {
     return MemberResponse.builder()
+        .id(member.getId())
         .nickname(member.getNickname())
         .major(member.getMajor())
         .introduction(member.getIntroduction())
