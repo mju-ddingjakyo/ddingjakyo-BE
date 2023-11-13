@@ -3,6 +3,7 @@ package com.example.ddingjakyo_be.belong.service;
 import com.example.ddingjakyo_be.belong.domain.Belong;
 import com.example.ddingjakyo_be.belong.repository.BelongRepository;
 import com.example.ddingjakyo_be.member.domain.Member;
+import com.example.ddingjakyo_be.member.service.MemberService;
 import com.example.ddingjakyo_be.team.domain.Team;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 public class BelongService {
 
   private final BelongRepository belongRepository;
+
+  private final MemberService memberService;
 
   public void doBelong(List<Member> members, Team team) {
 
@@ -32,5 +35,11 @@ public class BelongService {
     belongRepository.deleteAll(belongs);
     // 연관관계 다시 설정
     doBelong(members, team);
+  }
+
+  public Team findTeamByMemberId(Long MemberId){
+    Member member = memberService.findMemberById(MemberId);
+    Belong belong = belongRepository.findByMember(member);
+    return belong.getTeam();
   }
 }
