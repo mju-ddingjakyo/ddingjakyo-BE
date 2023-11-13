@@ -9,6 +9,8 @@ import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.member.repository.MemberRepository;
 import com.example.ddingjakyo_be.team.service.TeamService;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,6 +59,17 @@ public class MemberService {
 
   public Member findMemberByEmail(final String email) {
     return memberRepository.findMemberByEmail(email);
+  }
+
+  public List<Member> findMembersByEmails(final List<String> emails) {
+    List<Member> members = new ArrayList<>();
+
+    for (String email : emails) {
+      Member member = findMemberByEmail(email);
+      members.add(member);
+    }
+
+    return members;
   }
 
   public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId) {
