@@ -31,8 +31,17 @@ public class ProposalController {
 
   @GetMapping("/proposal/{teamid}/send-proposal")
   public ResponseEntity<ResponseMessage> getSendProposal(@PathVariable("teamid") Long teamId){
+    //세션 -> 유저 정보 -> 팀 아이디
     SendProposalResponse sendProposalResponse = proposalService.getSendProposal(teamId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sendProposalResponse);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  @GetMapping("/proposal/receive-proposals")
+  public ResponseEntity<ResponseMessage> getReceiveProposals(Long teamId) {
+    //세션 -> 유저 정보 -> 팀 아이디
+    List<ReceiveProposalResponse> receiveProposals = proposalService.getReceiveProposals(teamId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, receiveProposals);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 }
