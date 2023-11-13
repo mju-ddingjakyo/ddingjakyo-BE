@@ -61,7 +61,7 @@ public class MemberService {
     return memberRepository.findMemberByEmail(email);
   }
 
-  public List<Member> findMembersByEmailList(final List<String> emails) {
+  public List<Member> findMembersByEmails(final List<String> emails) {
     List<Member> members = new ArrayList<>();
 
     for (String email : emails) {
