@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatchingRequest {
 
+  private Long receiverId;
+
   private String kakaoRoomURL;
 
   public Proposal toEntity(ProposalStatus proposalStatus, Team senderTeam, Team receiverTeam){

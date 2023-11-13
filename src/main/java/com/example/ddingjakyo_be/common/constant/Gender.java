@@ -10,9 +10,9 @@ public enum Gender {
 
   private final int identifier;
 
-  public static Gender getGender(int userInput){
-    for(Gender gender : Gender.values()){
-      if(gender.identifier == userInput){
+  public static Gender getGender(int userInput) {
+    for (Gender gender : Gender.values()) {
+      if (gender.identifier == userInput) {
         return gender;
       }
     }
