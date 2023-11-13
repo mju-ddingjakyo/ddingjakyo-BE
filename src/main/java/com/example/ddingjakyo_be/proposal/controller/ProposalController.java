@@ -29,8 +29,8 @@ public class ProposalController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @GetMapping("/proposal/{teamid}/send-proposal")
-  public ResponseEntity<ResponseMessage> getSendProposal(@PathVariable("teamid") Long teamId){
+  @GetMapping("/proposal/send-proposal")
+  public ResponseEntity<ResponseMessage> getSendProposal(Long teamId) {
     //세션 -> 유저 정보 -> 팀 아이디
     SendProposalResponse sendProposalResponse = proposalService.getSendProposal(teamId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sendProposalResponse);
@@ -42,6 +42,19 @@ public class ProposalController {
     //세션 -> 유저 정보 -> 팀 아이디
     List<ReceiveProposalResponse> receiveProposals = proposalService.getReceiveProposals(teamId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, receiveProposals);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+  @PatchMapping("/proposal")
+  public ResponseEntity<ResponseMessage> matchingResult(@RequestBody MatchingResultRequest matchingResultRequest){
+    //프론트에서 수락한 팀 아이디를 받아온다.
+    //수락, 거절 상태도 받아온다.
+    if(matchingResultRequest.isMatchingResult()) {
+      ApproveMatchingResponse approveMatchingResponse = proposalService.approveMatching(matchingResultRequest);
+      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, approveMatchingResponse);
+      return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
+    proposalService.rejectMatching(matchingResultRequest);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 }

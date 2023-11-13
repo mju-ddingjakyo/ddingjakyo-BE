@@ -47,4 +47,12 @@ public class Proposal extends BaseEntity {
     this.senderTeam = senderTeam;
     this.receiverTeam = receiverTeam;
   }
+
+  public void approveProposal(){
+    this.proposalStatus = ProposalStatus.APPROVED;
+  }
+
+  public void rejectProposal(){
+    this.proposalStatus = ProposalStatus.REJECTED;
+  }
 }

@@ -69,4 +69,8 @@ public class Team extends BaseEntity {
     this.content = content;
     this.memberCount = memberCount;
   }
+
+  public void completeMatching(){
+    this.matchStatus= MatchStatus.IMPOSSIBLE;
+  }
 }
