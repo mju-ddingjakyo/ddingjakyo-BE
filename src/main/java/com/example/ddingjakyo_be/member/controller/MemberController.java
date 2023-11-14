@@ -2,6 +2,7 @@ package com.example.ddingjakyo_be.member.controller;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
+import com.example.ddingjakyo_be.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.member.controller.dto.request.MemberProfileRequest;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
@@ -57,6 +58,14 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
+  @PostMapping("/register")
+  public ResponseEntity<ResponseMessage> register(MemberAuthRequest memberAuthRequest) {
+    memberService.register(memberAuthRequest);
+    // Profile 생성 되지 않았다는 여부 반환
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
   @GetMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
@@ -96,6 +105,7 @@ public class MemberController {
       // 세션 무효화
       request.getSession().invalidate();
       ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+      return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);

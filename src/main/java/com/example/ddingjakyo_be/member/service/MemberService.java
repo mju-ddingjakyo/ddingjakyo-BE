@@ -38,8 +38,9 @@ public class MemberService {
     String password = memberAuthRequest.getPassword();
     // 비밀번호 암호화
     String encodedPassword = passwordEncoder.encode(password);
+    int gender = memberAuthRequest.getGender();
 
-    Member member = memberAuthRequest.toEntity(encodedPassword);
+    Member member = memberAuthRequest.toEntity(encodedPassword, gender);
     memberRepository.save(member);
   }
 

@@ -11,15 +11,15 @@ public class MemberAuthRequest {
 
   private String email;
 
-  private String gender;
+  private int gender;
 
   private String password;
 
-  public Member toEntity(String encodedPassword) {
+  public Member toEntity(String encodedPassword, int userInput) {
     return Member.builder()
         .email(email)
         .password(encodedPassword)
-        .gender(Gender.valueOf(gender))
+        .gender(Gender.getGender(userInput))
         .build();
   }
 }
