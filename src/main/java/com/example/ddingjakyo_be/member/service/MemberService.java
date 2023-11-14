@@ -54,16 +54,19 @@ public class MemberService {
   }
 
   public Optional<Member> findMemberById(final Long memberId) {
-    Member member = memberRepository.findById(memberId).orElseThrow(IllegalAccessError::new);
-    return Optional.ofNullable(member);
+    Optional<Member> member = memberRepository.findById(memberId);
+    if (member.isEmpty()) {
+      throw new IllegalArgumentException();
+    }
+    return member;
   }
 
   public Optional<Member> findMemberByEmail(final String email) {
-    Member member = memberRepository.findMemberByEmail(email);
-    if (member == null) {
+    Optional<Member> member = memberRepository.findMemberByEmail(email);
+    if (member.isEmpty()) {
       throw new IllegalArgumentException();
     }
-    return Optional.of(member);
+    return member;
   }
 
   public List<Optional<Member>> findMembersByEmails(final List<String> emails) {
