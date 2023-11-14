@@ -30,9 +30,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/login")
-  @ResponseBody
   public ResponseEntity<ResponseMessage> login(HttpServletRequest request) {
-
     // 회원 정보 조회
     String email = request.getParameter("email");
     String password = request.getParameter("password");
@@ -42,12 +40,14 @@ public class MemberController {
     if (member != null) {
       HttpSession session = request.getSession();
       session.setAttribute("member", member);
-      return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_REQUEST),
-          HttpStatus.BAD_GATEWAY);
+      session.setMaxInactiveInterval(30 * 60); // 세션 유지 시간은 30분으로 설정
+
+      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+      return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_REQUEST),
+        HttpStatus.BAD_GATEWAY);
   }
 
   @PostMapping("/logout")
