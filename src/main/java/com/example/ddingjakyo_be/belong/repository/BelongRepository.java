@@ -4,10 +4,11 @@ import com.example.ddingjakyo_be.belong.domain.Belong;
 import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.team.domain.Team;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BelongRepository extends JpaRepository<Belong, Long> {
 
-  List<Belong> findByTeam(Team team);
-  Belong findByMember(Member member);
+  Optional<List<Belong>> findAllByTeam(Team team);
+  Optional<Belong> findByMember(Member member);
 }
