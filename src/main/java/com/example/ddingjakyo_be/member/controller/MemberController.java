@@ -42,9 +42,11 @@ public class MemberController {
     if (member != null) {
       HttpSession session = request.getSession();
       session.setAttribute("member", member);
+      return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_REQUEST),
+          HttpStatus.BAD_GATEWAY);
     }
 
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, member);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
@@ -65,10 +67,6 @@ public class MemberController {
   @GetMapping("/member/{email}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
-//    if (memberProfile == null) {
-//      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.BAD_REQUEST);
-//      return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
-//    }
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
@@ -82,9 +80,11 @@ public class MemberController {
 
     if (Objects.equals(authId, memberId)) {
       memberService.updateMemberProfile(updateMemberProfile, memberId);
-      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK)
+      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
+
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
   }
 
   @DeleteMapping("/member/{memberId}")
