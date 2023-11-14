@@ -30,12 +30,11 @@ public class TeamService {
 
   private final BelongService belongService;
 
-  public void createTeam(CreateTeamRequest createTeamRequest) {
+  public void createTeam(Long authId, CreateTeamRequest createTeamRequest) {
     List<Member> members = memberService.findMembersByEmails(createTeamRequest.getMembersEmail());
-    //한명의 유저는 하나의 팀만 생성 가능하다
-    //leaderID로 만든 팀이 이미 있다면 예외 처리
-    //leaderID는 httpsession의 getsession을 통해 userid값을 받아온다.
-    Team team = createTeamRequest.toEntity(MatchStatus.POSSIBLE, 1);
+    //leaderid는 하나의 팀만 만들 수 있다.
+    Team findTeam = belongService.findTeamByMemberId(authId);
+    Team team = createTeamRequest.toEntity(MatchStatus.POSSIBLE, authId);
     teamRepository.save(team);
     belongService.doBelong(members, team);
   }
@@ -57,15 +56,20 @@ public class TeamService {
     return GetOneTeamResponse.of(team, membersResponse);
   }
 
-  public void deleteTeam(Long teamId) {
+  public void deleteTeam(Long authId, Long teamId) {
     Team team = findTeamById(teamId);
+    isLeader(team, authId);
     //받아온 session id로 유저 정보를 찾고,
     //유저의 아이디와 team의 leader id가 같은지 확인
     //같다면 삭제하고, 같지 않다면 예외처리
     teamRepository.delete(team);
   }
 
-  public void updateTeam(UpdateTeamRequest updateTeamRequest, Long teamId) {
+  private void isLeader(Long authId) {
+
+  }
+
+  public void updateTeam(Long authId, UpdateTeamRequest updateTeamRequest, Long teamId) {
     Team team = findTeamById(teamId);
     //받아온 session id로 유저 정보를 찾고,
     //유저의 아이디와 team의 leader id가 같은지 확인

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,8 +29,8 @@ public class TeamController {
   private final TeamService teamService;
 
   @PostMapping("/team")
-  public ResponseEntity<ResponseMessage> createTeam(@RequestBody CreateTeamRequest createTeamRequest) {
-    teamService.createTeam(createTeamRequest);
+  public ResponseEntity<ResponseMessage> createTeam(@SessionAttribute("memberId") Long authId, @RequestBody CreateTeamRequest createTeamRequest) {
+    teamService.createTeam(authId, createTeamRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
@@ -50,16 +51,19 @@ public class TeamController {
   }
 
   @DeleteMapping("/team/{teamId}")
-  public ResponseEntity<ResponseMessage> deleteTeam(@PathVariable("teamId") Long teamId){
+  public ResponseEntity<ResponseMessage> deleteTeam(@SessionAttribute("memberId") Long authId, @PathVariable("teamId") Long teamId){
     //httpsession을 통해 sessionId를 가져오고, sessionId를 deleteTeam에 넘겨준다.
-    teamService.deleteTeam(teamId);
+    teamService.deleteTeam(authId, teamId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @PutMapping("/team/{teamId}")
-  public ResponseEntity<ResponseMessage> updateTeam(@RequestBody UpdateTeamRequest updateTeamRequest, @PathVariable("teamId") Long teamId) {
-    teamService.updateTeam(updateTeamRequest, teamId);
+  public ResponseEntity<ResponseMessage> updateTeam(
+      @SessionAttribute("memberId") Long authId,
+      @RequestBody UpdateTeamRequest updateTeamRequest,
+      @PathVariable("teamId") Long teamId) {
+    teamService.updateTeam(authId, updateTeamRequest, teamId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
