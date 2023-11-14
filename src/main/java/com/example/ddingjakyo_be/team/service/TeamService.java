@@ -78,7 +78,7 @@ public class TeamService {
   }
 
   private void checkUserCreatedTeam(Long authId){
-    teamRepository.findByLeaderId(authId).ifPresent(team->{throw new IllegalArgumentException();});
+    teamRepository.findByLeaderId(authId).ifPresent(team->{throw new NoAuthException();});
   }
 
   private void addTeamResponse(List<GetAllTeamResponse> getAllTeamResponses) {
