@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatchingResultRequest {
 
-  private Long senderId;
+  private Long sendTeamId;
 
   private boolean matchingResult;
 }

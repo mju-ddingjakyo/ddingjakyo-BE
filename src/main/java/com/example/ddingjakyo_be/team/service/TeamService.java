@@ -77,6 +77,12 @@ public class TeamService {
     return teamRepository.findById(teamId).orElseThrow(IllegalArgumentException::new);
   }
 
+  public void isLeader(Team team, Long authId) {
+    if(team.getLeaderId() != authId){
+      throw new NoAuthException();
+    }
+  }
+
   private void checkUserCreatedTeam(Long authId){
     teamRepository.findByLeaderId(authId).ifPresent(team->{throw new NoAuthException();});
   }
@@ -89,12 +95,6 @@ public class TeamService {
           .map(MemberProfileResponse::from)
           .collect(Collectors.toList());
       getAllTeamResponses.add(GetAllTeamResponse.of(team, membersProfile));
-    }
-  }
-
-  private void isLeader(Team team, Long authId) {
-    if(team.getLeaderId() != authId){
-      throw new NoAuthException();
     }
   }
 
