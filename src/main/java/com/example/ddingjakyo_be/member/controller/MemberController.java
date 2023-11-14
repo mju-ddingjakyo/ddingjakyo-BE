@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -59,7 +59,7 @@ public class MemberController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<ResponseMessage> register(MemberAuthRequest memberAuthRequest) {
+  public ResponseEntity<ResponseMessage> register(@RequestBody MemberAuthRequest memberAuthRequest) {
     memberService.register(memberAuthRequest);
     // Profile 생성 되지 않았다는 여부 반환
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
