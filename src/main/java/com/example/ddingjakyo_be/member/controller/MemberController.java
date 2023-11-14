@@ -39,7 +39,7 @@ public class MemberController {
     // 세션에 정보 저장, 유지 시간 설정
     if (member != null) {
       HttpSession session = request.getSession();
-      session.setAttribute("member", member);
+      session.setAttribute("memberId", member.getId());
       session.setMaxInactiveInterval(30 * 60); // 세션 유지 시간은 30분으로 설정
 
       ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
@@ -73,10 +73,9 @@ public class MemberController {
 
   @PutMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
-      @SessionAttribute("member") MemberResponse member,
+      @SessionAttribute(value = "memberId", required = false) Long authId,
       MemberProfileRequest updateMemberProfile,
       @PathVariable Long memberId) {
-    Long authId = member.getId();
 
     if (Objects.equals(authId, memberId)) {
       memberService.updateMemberProfile(updateMemberProfile, memberId);
@@ -89,18 +88,16 @@ public class MemberController {
 
   @DeleteMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> deleteMember(
-      @SessionAttribute("member") MemberResponse member,
+      @SessionAttribute(value = "memberId", required = false) Long authId,
       @PathVariable Long memberId, HttpServletRequest request) {
-    Long authId = member.getId();
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.FORBIDDEN);
 
     if (Objects.equals(authId, memberId)) {
       memberService.deleteMember(memberId);
       // 세션 무효화
       request.getSession().invalidate();
-      responseMessage = ResponseMessage.of(ResponseStatus.OK);
+      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     }
 
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
   }
 }
