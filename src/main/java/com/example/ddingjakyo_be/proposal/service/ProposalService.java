@@ -1,7 +1,6 @@
 package com.example.ddingjakyo_be.proposal.service;
 
 import com.example.ddingjakyo_be.belong.service.BelongService;
-import com.example.ddingjakyo_be.member.service.MemberService;
 import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
@@ -12,7 +11,6 @@ import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.proposal.repository.ProposalRepository;
 import com.example.ddingjakyo_be.team.domain.Team;
 import com.example.ddingjakyo_be.team.service.TeamService;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,22 +27,23 @@ public class ProposalService {
 
   private final TeamService teamService;
 
-  public void proposeMatching(MatchingRequest matchingRequest) {
+  public void proposeMatching(Long authId, MatchingRequest matchingRequest) {
     //httpSession으로 getsession을 한다음 user의 정보를 얻어온다. userid를 얻는다.
-    Team senderTeam = belongService.findTeamByMemberId(senderId);
+    Team senderTeam = belongService.findTeamByMemberId(authId);
     Team receiverTeam = belongService.findTeamByMemberId(matchingRequest.getReceiverId());
 
     Proposal proposal = matchingRequest.toEntity(ProposalStatus.WAITING, senderTeam, receiverTeam);
     proposalRepository.save(proposal);
   }
 
-  public SendProposalResponse getSendProposal(Long teamId) {
-    Proposal proposal = getProposalFromSenderTeam(teamId);
+  public SendProposalResponse getSendProposal(Long authId) {
+    Team team = belongService.findTeamByMemberId(authId);
+    Proposal proposal = getProposalFromSenderTeam(team.getId());
     return SendProposalResponse.from(proposal);
   }
 
-  public List<ReceiveProposalResponse> getReceiveProposals(Long teamId) {
-    Team team = teamService.findTeamById(teamId);
+  public List<ReceiveProposalResponse> getReceiveProposals(Long authId) {
+    Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team);
     return proposals.stream()
         .map(ReceiveProposalResponse::from)
