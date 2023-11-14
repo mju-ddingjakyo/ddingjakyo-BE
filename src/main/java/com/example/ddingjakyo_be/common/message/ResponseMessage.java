@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class ResponseMessage {
+
   private ResponseStatus responseStatus;
   private String resultMessage;
   @JsonInclude(JsonInclude.Include.NON_NULL)
