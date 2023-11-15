@@ -44,6 +44,7 @@ public class Member extends BaseEntity {
 
   private String introduction;
 
+  @Column(columnDefinition = "TEXT")
   private String profileImage;
 
   @OneToMany(mappedBy = "member")
@@ -64,27 +65,13 @@ public class Member extends BaseEntity {
     this.profileImage = profileImage;
   }
 
-  public void changeNickname(String nickname) {
-    this.nickname = nickname;
-  }
 
-  public void changeMajor(String major) {
-    this.major = major;
-  }
-
-  public void changeAge(int age) {
-    this.age = age;
-  }
-
-  public void changeMbti(String mbti) {
-    this.mbti = mbti;
-  }
-
-  public void changeIntroduction(String introduction) {
-    this.introduction = introduction;
-  }
-
-  public void changeProfileImage(String profileImage) {
-    this.profileImage = profileImage;
+  public void updateMemberProfile(Member updateMember) {
+    this.nickname = updateMember.getNickname();
+    this.major = updateMember.getMajor();
+    this.introduction = updateMember.getIntroduction();
+    this.age = updateMember.getAge();
+    this.mbti = updateMember.getMbti();
+    this.profileImage = updateMember.getProfileImage();
   }
 }
