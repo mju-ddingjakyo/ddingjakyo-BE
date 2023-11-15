@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,6 +62,14 @@ public class MemberController {
   @PostMapping("/register")
   public ResponseEntity<ResponseMessage> register(@RequestBody MemberAuthRequest memberAuthRequest) {
     memberService.register(memberAuthRequest);
+    // Profile 생성 되지 않았다는 여부 반환
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  @PatchMapping("/member")
+  public ResponseEntity<ResponseMessage> createMemberProfile(@SessionAttribute("memberId") Long memberId, @RequestBody MemberProfileRequest memberProfileRequest) {
+    memberService.createMemberProfile(memberId, memberProfileRequest);
     // Profile 생성 되지 않았다는 여부 반환
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
