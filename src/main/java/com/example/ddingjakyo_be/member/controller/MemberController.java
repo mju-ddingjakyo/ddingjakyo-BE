@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -69,14 +70,6 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @PatchMapping("/member")
-  public ResponseEntity<ResponseMessage> createMemberProfile(@SessionAttribute("memberId") Long memberId, @RequestBody MemberProfileRequest memberProfileRequest) {
-    memberService.createMemberProfile(memberId, memberProfileRequest);
-    // Profile 생성 되지 않았다는 여부 반환
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-  }
-
   @GetMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
@@ -84,7 +77,7 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @GetMapping("/member/email")
+  @GetMapping("/member")
   public ResponseEntity<ResponseMessage> getMemberById(
       @RequestParam(value = "email", required = false) String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
@@ -92,10 +85,20 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
+  @PostMapping("/member")
+  public ResponseEntity<ResponseMessage> createMemberProfile(
+      @SessionAttribute("memberId") Long memberId,
+      @RequestBody MemberProfileRequest memberProfileRequest) {
+    memberService.createMemberProfile(memberId, memberProfileRequest);
+    // Profile 생성 되지 않았다는 여부 반환
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
   @PutMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
       @SessionAttribute(value = "memberId", required = false) Long authId,
-      MemberProfileRequest updateMemberProfile,
+      @RequestBody MemberProfileRequest updateMemberProfile,
       @PathVariable Long memberId) {
 
     if (Objects.equals(authId, memberId)) {

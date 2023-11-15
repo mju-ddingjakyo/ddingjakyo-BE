@@ -53,7 +53,8 @@ public class MemberService {
   }
 
   public MemberProfileResponse getMemberProfileByEmail(final String email) {
-    Member member = memberRepository.findMemberByEmail(email).orElseThrow(IllegalArgumentException::new);
+    Member member = memberRepository.findMemberByEmail(email)
+        .orElseThrow(IllegalArgumentException::new);
     return MemberProfileResponse.from(member);
   }
 
@@ -76,13 +77,11 @@ public class MemberService {
   public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId) {
     // 세션의 memberId와 비교 후 같으면 수정
     Member member = findMemberById(memberId);
+    System.out.println("ID: " + memberId);
+    System.out.println(memberProfileRequest.getNickname());
 
-    member.changeNickname(memberProfileRequest.getNickname());
-    member.changeMajor(memberProfileRequest.getMajor());
-    member.changeAge(memberProfileRequest.getAge());
-    member.changeMbti(memberProfileRequest.getMbti());
-    member.changeIntroduction(memberProfileRequest.getIntroduction());
-    member.changeProfileImage(memberProfileRequest.getProfileImage());
+    Member updateMember = memberProfileRequest.toEntity();
+    member.updateMemberProfile(updateMember);
   }
 
   public void deleteMember(final Long memberId) {
