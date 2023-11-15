@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -60,7 +61,8 @@ public class MemberController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<ResponseMessage> register(@RequestBody MemberAuthRequest memberAuthRequest) {
+  public ResponseEntity<ResponseMessage> register(
+      @RequestBody MemberAuthRequest memberAuthRequest) {
     memberService.register(memberAuthRequest);
     // Profile 생성 되지 않았다는 여부 반환
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
@@ -82,8 +84,9 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @GetMapping("/member/{email}")
-  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable String email) {
+  @GetMapping("/member/email")
+  public ResponseEntity<ResponseMessage> getMemberById(
+      @RequestParam(value = "email", required = false) String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
