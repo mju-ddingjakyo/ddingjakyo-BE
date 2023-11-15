@@ -1,6 +1,5 @@
 package com.example.ddingjakyo_be.interceptor;
 
-import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -14,10 +13,10 @@ public class LogInCheckInterceptor implements HandlerInterceptor {
 
     // 1. 세션에서 회원 정보 조회
     HttpSession session = request.getSession();
-    MemberResponse member = (MemberResponse) session.getAttribute("member");
+    Long memberId = (Long) session.getAttribute("memberId");
 
     // 2. 회원 정보 체크
-    if (member == null) {
+    if (memberId == null) {
       return false;
     }
 
