@@ -5,6 +5,7 @@ import com.example.ddingjakyo_be.common.entity.BaseEntity;
 import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.team.constant.MatchStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,13 +45,13 @@ public class Team extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
-  @OneToMany(mappedBy = "senderTeam")
+  @OneToMany(mappedBy = "senderTeam", cascade = CascadeType.ALL)
   private final List<Proposal> sendProposals = new ArrayList<>();
 
-  @OneToMany(mappedBy = "receiverTeam")
+  @OneToMany(mappedBy = "receiverTeam", cascade = CascadeType.ALL)
   private final List<Proposal> receiveProposals = new ArrayList<>();
 
-  @OneToMany(mappedBy = "team")
+  @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
   private final List<Belong> belongs = new ArrayList<>();
 
   @Builder
