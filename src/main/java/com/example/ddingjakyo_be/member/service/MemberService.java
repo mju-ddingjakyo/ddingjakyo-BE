@@ -43,6 +43,10 @@ public class MemberService {
     memberRepository.save(member);
   }
 
+  public void createMemberProfile(Long memberId, MemberProfileRequest memberProfileRequest) {
+    updateMemberProfile(memberProfileRequest, memberId);
+  }
+
   public MemberResponse getMemberProfileById(final Long memberId) {
     Member member = findMemberById(memberId);
     return MemberResponse.from(member);
@@ -79,8 +83,6 @@ public class MemberService {
     member.changeMbti(memberProfileRequest.getMbti());
     member.changeIntroduction(memberProfileRequest.getIntroduction());
     member.changeProfileImage(memberProfileRequest.getProfileImage());
-
-    memberRepository.save(member);
   }
 
   public void deleteMember(final Long memberId) {

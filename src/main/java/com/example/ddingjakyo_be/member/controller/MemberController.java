@@ -15,11 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -59,8 +61,17 @@ public class MemberController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<ResponseMessage> register(@RequestBody MemberAuthRequest memberAuthRequest) {
+  public ResponseEntity<ResponseMessage> register(
+      @RequestBody MemberAuthRequest memberAuthRequest) {
     memberService.register(memberAuthRequest);
+    // Profile 생성 되지 않았다는 여부 반환
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  @PatchMapping("/member")
+  public ResponseEntity<ResponseMessage> createMemberProfile(@SessionAttribute("memberId") Long memberId, @RequestBody MemberProfileRequest memberProfileRequest) {
+    memberService.createMemberProfile(memberId, memberProfileRequest);
     // Profile 생성 되지 않았다는 여부 반환
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -73,8 +84,9 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @GetMapping("/member/{email}")
-  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable String email) {
+  @GetMapping("/member/email")
+  public ResponseEntity<ResponseMessage> getMemberById(
+      @RequestParam(value = "email", required = false) String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
