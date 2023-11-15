@@ -19,14 +19,14 @@ public class GetOneTeamResponse {
 
   private int memberCount;
 
-  private int leaderId;
+  private Long leaderId;
 
   private String matchStatus;
 
   private List<MemberResponse> membersResponse;
 
   @Builder
-  public GetOneTeamResponse(String name, int gender, String content, int memberCount, int leaderId, String matchStatus, List<MemberResponse> membersResponse) {
+  public GetOneTeamResponse(String name, int gender, String content, int memberCount, Long leaderId, String matchStatus, List<MemberResponse> membersResponse) {
     this.name = name;
     this.gender = gender;
     this.content = content;

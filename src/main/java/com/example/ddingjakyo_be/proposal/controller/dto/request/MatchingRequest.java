@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatchingRequest {
 
-  private Long receiverId;
+  private Long receiveTeamId;
 
   private String kakaoRoomURL;
 

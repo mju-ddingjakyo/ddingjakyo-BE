@@ -1,6 +1,7 @@
 package com.example.ddingjakyo_be.proposal.service;
 
 import com.example.ddingjakyo_be.belong.service.BelongService;
+import com.example.ddingjakyo_be.common.exception.NoAuthException;
 import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
@@ -28,30 +29,33 @@ public class ProposalService {
   private final TeamService teamService;
 
   public void proposeMatching(Long authId, MatchingRequest matchingRequest) {
-    //httpSession으로 getsession을 한다음 user의 정보를 얻어온다. userid를 얻는다.
+    isProposal(authId);
     Team senderTeam = belongService.findTeamByMemberId(authId);
-    Team receiverTeam = belongService.findTeamByMemberId(matchingRequest.getReceiverId());
+    Team receiverTeam = teamService.findTeamById(matchingRequest.getReceiveTeamId());
 
+    teamService.isLeader(senderTeam, authId);
     Proposal proposal = matchingRequest.toEntity(ProposalStatus.WAITING, senderTeam, receiverTeam);
     proposalRepository.save(proposal);
   }
 
   public SendProposalResponse getSendProposal(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
-    Proposal proposal = getProposalFromSenderTeam(team.getId());
+    Proposal proposal = proposalRepository.findBySenderTeam(team).orElseThrow(IllegalArgumentException::new);
     return SendProposalResponse.from(proposal);
   }
 
   public List<ReceiveProposalResponse> getReceiveProposals(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
-    List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team);
+    List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team).orElseThrow(IllegalArgumentException::new);
     return proposals.stream()
         .map(ReceiveProposalResponse::from)
         .toList();
   }
 
   public ApproveMatchingResponse approveMatching(MatchingResultRequest matchingResultRequest) {
-    Proposal proposal = getProposalFromSenderTeam(matchingResultRequest.getSenderId());
+    Team team = teamService.findTeamById(matchingResultRequest.getSendTeamId());
+    teamService.isLeader(team, matchingResultRequest.getSendTeamId());
+    Proposal proposal = proposalRepository.findBySenderTeam(team).orElseThrow(IllegalArgumentException::new);
     proposal.approveProposal();
     proposal.getReceiverTeam().completeMatching();
     proposal.getSenderTeam().completeMatching();
@@ -59,12 +63,13 @@ public class ProposalService {
   }
 
   public void rejectMatching(MatchingResultRequest matchingResultRequest) {
-    Proposal proposal = getProposalFromSenderTeam(matchingResultRequest.getSenderId());
+    Team senderTeam = teamService.findTeamById(matchingResultRequest.getSendTeamId());
+    Proposal proposal = proposalRepository.findBySenderTeam(senderTeam).orElseThrow(IllegalArgumentException::new);
     proposal.rejectProposal();
   }
 
-  private Proposal getProposalFromSenderTeam(Long teamId) {
-    Team senderTeam = teamService.findTeamById(teamId);
-    return proposalRepository.findBySenderTeam(senderTeam);
+  private void isProposal(Long authId) {
+    Team authTeam = belongService.findTeamByMemberId(authId);
+    proposalRepository.findBySenderTeam(authTeam).ifPresent(team->{throw new NoAuthException();});
   }
 }

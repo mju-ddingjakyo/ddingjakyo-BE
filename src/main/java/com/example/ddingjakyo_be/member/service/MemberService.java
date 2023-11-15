@@ -9,7 +9,6 @@ import com.example.ddingjakyo_be.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,8 @@ public class MemberService {
   private final PasswordEncoder passwordEncoder;
 
   public MemberResponse login(final String email, final String password) {
-    Member member = findMemberByEmail(email).orElseThrow(IllegalArgumentException::new);
+    Member member = memberRepository.findMemberByEmail(email)
+        .orElseThrow(IllegalArgumentException::new);
     String encodedPassword = (member == null) ? "" : member.getPassword();
 
     if (member == null || !passwordEncoder.matches(password, encodedPassword)) {
@@ -44,45 +44,34 @@ public class MemberService {
   }
 
   public MemberResponse getMemberProfileById(final Long memberId) {
-    Member member = findMemberById(memberId).orElseThrow(IllegalArgumentException::new);
+    Member member = findMemberById(memberId);
     return MemberResponse.from(member);
   }
 
   public MemberProfileResponse getMemberProfileByEmail(final String email) {
-    Member member = findMemberByEmail(email).orElseThrow(IllegalArgumentException::new);
+    Member member = memberRepository.findMemberByEmail(email).orElseThrow(IllegalArgumentException::new);
     return MemberProfileResponse.from(member);
   }
 
-  public Optional<Member> findMemberById(final Long memberId) {
-    Optional<Member> member = memberRepository.findById(memberId);
-    if (member.isEmpty()) {
-      throw new IllegalArgumentException();
-    }
-    return member;
-  }
-
-  public Optional<Member> findMemberByEmail(final String email) {
-    Optional<Member> member = memberRepository.findMemberByEmail(email);
-    if (member.isEmpty()) {
-      throw new IllegalArgumentException();
-    }
-    return member;
-  }
-
-  public List<Optional<Member>> findMembersByEmails(final List<String> emails) {
-    List<Optional<Member>> members = new ArrayList<>();
+  public List<Member> findMembersByEmails(final List<String> emails) {
+    List<Member> members = new ArrayList<>();
 
     for (String email : emails) {
-      Optional<Member> member = findMemberByEmail(email);
+      Member member = memberRepository.findMemberByEmail(email)
+          .orElseThrow(IllegalArgumentException::new);
       members.add(member);
     }
 
     return members;
   }
 
+  public Member findMemberById(Long memberId) {
+    return memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+  }
+
   public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId) {
     // 세션의 memberId와 비교 후 같으면 수정
-    Member member = findMemberById(memberId).orElseThrow(IllegalArgumentException::new);
+    Member member = findMemberById(memberId);
 
     member.changeNickname(memberProfileRequest.getNickname());
     member.changeMajor(memberProfileRequest.getMajor());
@@ -95,7 +84,7 @@ public class MemberService {
   }
 
   public void deleteMember(final Long memberId) {
-    Member member = findMemberById(memberId).orElseThrow(IllegalArgumentException::new);
+    Member member = findMemberById(memberId);
     // 삭제하려는 클라이언트의 세션 정보의 memberId와 비교 후 같으면 삭제, 아니면 실패 응답
     memberRepository.delete(member);
   }

@@ -2,7 +2,6 @@ package com.example.ddingjakyo_be.common.exception;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
-import javax.security.sasl.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +15,8 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(AuthenticationException.class)
-  public ResponseEntity<ResponseMessage> AuthenticationException(){
+  @ExceptionHandler(NoAuthException.class)
+  public ResponseEntity<ResponseMessage> NoAuthException(){
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
   }
 }
