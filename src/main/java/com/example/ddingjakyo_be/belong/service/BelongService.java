@@ -8,6 +8,7 @@ import com.example.ddingjakyo_be.team.domain.Team;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,7 +37,7 @@ public class BelongService {
     doBelong(members, team);
   }
 
-  public Team findTeamByMemberId(Long memberId){
+  public Team findTeamByMemberId(Long memberId) throws NotFoundException {
     Member member = memberService.findMemberById(memberId);
     Belong belong = belongRepository.findByMember(member).orElseThrow(IllegalArgumentException::new);
     return belong.getTeam();

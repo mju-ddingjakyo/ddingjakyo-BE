@@ -1,4 +1,4 @@
-package com.example.ddingjakyo_be.common.exception;
+package com.example.ddingjakyo_be.config.exception;
 
 import lombok.NoArgsConstructor;
 

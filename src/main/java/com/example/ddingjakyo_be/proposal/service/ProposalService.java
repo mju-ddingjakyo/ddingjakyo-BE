@@ -1,7 +1,7 @@
 package com.example.ddingjakyo_be.proposal.service;
 
 import com.example.ddingjakyo_be.belong.service.BelongService;
-import com.example.ddingjakyo_be.common.exception.NoAuthException;
+import com.example.ddingjakyo_be.config.exception.NoAuthException;
 import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
@@ -14,6 +14,7 @@ import com.example.ddingjakyo_be.team.domain.Team;
 import com.example.ddingjakyo_be.team.service.TeamService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,8 @@ public class ProposalService {
 
   private final TeamService teamService;
 
-  public void proposeMatching(Long authId, MatchingRequest matchingRequest) {
+  public void proposeMatching(Long authId, MatchingRequest matchingRequest)
+      throws NotFoundException {
     isProposal(authId);
     Team senderTeam = belongService.findTeamByMemberId(authId);
     Team receiverTeam = teamService.findTeamById(matchingRequest.getReceiveTeamId());
@@ -38,13 +40,13 @@ public class ProposalService {
     proposalRepository.save(proposal);
   }
 
-  public SendProposalResponse getSendProposal(Long authId) {
+  public SendProposalResponse getSendProposal(Long authId) throws NotFoundException {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team).orElseThrow(IllegalArgumentException::new);
     return SendProposalResponse.from(proposal);
   }
 
-  public List<ReceiveProposalResponse> getReceiveProposals(Long authId) {
+  public List<ReceiveProposalResponse> getReceiveProposals(Long authId) throws NotFoundException {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team).orElseThrow(IllegalArgumentException::new);
     return proposals.stream()
@@ -68,7 +70,7 @@ public class ProposalService {
     proposal.rejectProposal();
   }
 
-  private void isProposal(Long authId) {
+  private void isProposal(Long authId) throws NotFoundException {
     Team authTeam = belongService.findTeamByMemberId(authId);
     proposalRepository.findBySenderTeam(authTeam).ifPresent(team->{throw new NoAuthException();});
   }

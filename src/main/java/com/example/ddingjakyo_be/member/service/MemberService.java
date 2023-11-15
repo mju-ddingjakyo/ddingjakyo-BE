@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,9 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public MemberResponse login(final String email, final String password) {
+  public MemberResponse login(final String email, final String password) throws NotFoundException {
     Member member = memberRepository.findMemberByEmail(email)
-        .orElseThrow(IllegalArgumentException::new);
+        .orElseThrow(NotFoundException::new);
     String encodedPassword = (member == null) ? "" : member.getPassword();
 
     if (member == null || !passwordEncoder.matches(password, encodedPassword)) {
@@ -43,18 +44,20 @@ public class MemberService {
     memberRepository.save(member);
   }
 
-  public void createMemberProfile(Long memberId, MemberProfileRequest memberProfileRequest) {
+  public void createMemberProfile(Long memberId, MemberProfileRequest memberProfileRequest)
+      throws NotFoundException {
     updateMemberProfile(memberProfileRequest, memberId);
   }
 
-  public MemberResponse getMemberProfileById(final Long memberId) {
+  public MemberResponse getMemberProfileById(final Long memberId) throws NotFoundException {
     Member member = findMemberById(memberId);
     return MemberResponse.from(member);
   }
 
-  public MemberProfileResponse getMemberProfileByEmail(final String email) {
+  public MemberProfileResponse getMemberProfileByEmail(final String email)
+      throws NotFoundException {
     Member member = memberRepository.findMemberByEmail(email)
-        .orElseThrow(IllegalArgumentException::new);
+        .orElseThrow(NotFoundException::new);
     return MemberProfileResponse.from(member);
   }
 
@@ -70,23 +73,19 @@ public class MemberService {
     return members;
   }
 
-  public Member findMemberById(Long memberId) {
-    return memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+  public Member findMemberById(Long memberId) throws NotFoundException {
+    return memberRepository.findById(memberId).orElseThrow(NotFoundException::new);
   }
 
-  public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId) {
-    // 세션의 memberId와 비교 후 같으면 수정
+  public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId)
+      throws NotFoundException {
     Member member = findMemberById(memberId);
-    System.out.println("ID: " + memberId);
-    System.out.println(memberProfileRequest.getNickname());
-
     Member updateMember = memberProfileRequest.toEntity();
     member.updateMemberProfile(updateMember);
   }
 
-  public void deleteMember(final Long memberId) {
+  public void deleteMember(final Long memberId) throws NotFoundException {
     Member member = findMemberById(memberId);
-    // 삭제하려는 클라이언트의 세션 정보의 memberId와 비교 후 같으면 삭제, 아니면 실패 응답
     memberRepository.delete(member);
   }
 }

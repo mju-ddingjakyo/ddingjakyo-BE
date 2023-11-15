@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,7 +35,8 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/login")
-  public ResponseEntity<ResponseMessage> login(HttpServletRequest request) {
+  public ResponseEntity<ResponseMessage> login(HttpServletRequest request)
+      throws NotFoundException {
     // 회원 정보 조회
     String email = request.getParameter("email");
     String password = request.getParameter("password");
@@ -71,7 +73,8 @@ public class MemberController {
   }
 
   @GetMapping("/member/{memberId}")
-  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId) {
+  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId)
+      throws NotFoundException {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberResponse);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -79,7 +82,7 @@ public class MemberController {
 
   @GetMapping("/member")
   public ResponseEntity<ResponseMessage> getMemberById(
-      @RequestParam(value = "email", required = false) String email) {
+      @RequestParam(value = "email", required = false) String email) throws NotFoundException {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -88,7 +91,7 @@ public class MemberController {
   @PostMapping("/member")
   public ResponseEntity<ResponseMessage> createMemberProfile(
       @SessionAttribute("memberId") Long memberId,
-      @RequestBody MemberProfileRequest memberProfileRequest) {
+      @RequestBody MemberProfileRequest memberProfileRequest) throws NotFoundException {
     memberService.createMemberProfile(memberId, memberProfileRequest);
     // Profile 생성 되지 않았다는 여부 반환
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
@@ -99,7 +102,7 @@ public class MemberController {
   public ResponseEntity<ResponseMessage> updateMemberProfile(
       @SessionAttribute(value = "memberId", required = false) Long authId,
       @RequestBody MemberProfileRequest updateMemberProfile,
-      @PathVariable Long memberId) {
+      @PathVariable Long memberId) throws NotFoundException {
 
     if (Objects.equals(authId, memberId)) {
       memberService.updateMemberProfile(updateMemberProfile, memberId);
@@ -113,7 +116,7 @@ public class MemberController {
   @DeleteMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> deleteMember(
       @SessionAttribute(value = "memberId", required = false) Long authId,
-      @PathVariable Long memberId, HttpServletRequest request) {
+      @PathVariable Long memberId, HttpServletRequest request) throws NotFoundException {
 
     if (Objects.equals(authId, memberId)) {
       memberService.deleteMember(memberId);

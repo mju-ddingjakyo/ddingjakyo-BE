@@ -1,7 +1,7 @@
 package com.example.ddingjakyo_be.team.service;
 
 import com.example.ddingjakyo_be.belong.service.BelongService;
-import com.example.ddingjakyo_be.common.exception.NoAuthException;
+import com.example.ddingjakyo_be.config.exception.NoAuthException;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.domain.Member;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,8 @@ public class TeamService {
 
   private final BelongService belongService;
 
-  public void createTeam(Long authId, CreateTeamRequest createTeamRequest) {
+  public void createTeam(Long authId, CreateTeamRequest createTeamRequest)
+      throws NotFoundException {
     List<Member> members = memberService.findMembersByEmails(createTeamRequest.getMembersEmail());
     //leaderid는 하나의 팀만 만들 수 있다.
     checkUserCreatedTeam(authId);

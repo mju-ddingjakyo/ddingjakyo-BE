@@ -9,6 +9,7 @@ import com.example.ddingjakyo_be.team.controller.dto.response.GetOneTeamResponse
 import com.example.ddingjakyo_be.team.service.TeamService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,8 @@ public class TeamController {
   private final TeamService teamService;
 
   @PostMapping("/team")
-  public ResponseEntity<ResponseMessage> createTeam(@SessionAttribute("memberId") Long authId, @RequestBody CreateTeamRequest createTeamRequest) {
+  public ResponseEntity<ResponseMessage> createTeam(@SessionAttribute("memberId") Long authId, @RequestBody CreateTeamRequest createTeamRequest)
+      throws NotFoundException {
     teamService.createTeam(authId, createTeamRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);

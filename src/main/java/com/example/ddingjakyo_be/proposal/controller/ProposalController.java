@@ -10,6 +10,7 @@ import com.example.ddingjakyo_be.proposal.controller.dto.response.SendProposalRe
 import com.example.ddingjakyo_be.proposal.service.ProposalService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,21 +29,24 @@ public class ProposalController {
   private final ProposalService proposalService;
 
   @PostMapping("/proposal")
-  public ResponseEntity<ResponseMessage> proposeMatching(@SessionAttribute("memberId") Long authId, @RequestBody MatchingRequest matchingRequest) {
+  public ResponseEntity<ResponseMessage> proposeMatching(@SessionAttribute("memberId") Long authId, @RequestBody MatchingRequest matchingRequest)
+      throws NotFoundException {
     proposalService.proposeMatching(authId, matchingRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @GetMapping("/proposal/send-proposal")
-  public ResponseEntity<ResponseMessage> getSendProposal(@SessionAttribute("memberId") Long authId) {
+  public ResponseEntity<ResponseMessage> getSendProposal(@SessionAttribute("memberId") Long authId)
+      throws NotFoundException {
     SendProposalResponse sendProposalResponse = proposalService.getSendProposal(authId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sendProposalResponse);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @GetMapping("/proposal/receive-proposals")
-  public ResponseEntity<ResponseMessage> getReceiveProposals(@SessionAttribute("memberId") Long authId) {
+  public ResponseEntity<ResponseMessage> getReceiveProposals(@SessionAttribute("memberId") Long authId)
+      throws NotFoundException {
     List<ReceiveProposalResponse> receiveProposals = proposalService.getReceiveProposals(authId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, receiveProposals);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
