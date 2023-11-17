@@ -38,7 +38,7 @@ public class BelongService {
 
   public Team findTeamByMemberId(Long memberId){
     Member member = memberService.findMemberById(memberId);
-    Belong belong = belongRepository.findByMember(member).orElseThrow(IllegalArgumentException::new);
+    Belong belong = belongRepository.findByMember(member).orElseThrow(()-> new IllegalArgumentException("이 멤버는 팀에 속하지 않았습니다."));
     return belong.getTeam();
   }
 }
