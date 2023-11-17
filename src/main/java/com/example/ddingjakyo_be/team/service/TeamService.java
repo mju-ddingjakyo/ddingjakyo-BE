@@ -35,7 +35,6 @@ public class TeamService {
     List<Member> members = memberService.findMembersByEmails(createTeamRequest.getMembersEmail());
     //leaderid는 하나의 팀만 만들 수 있다.
     checkUserCreatedTeam(authId);
-    Team findTeam = belongService.findTeamByMemberId(authId);
     Team team = createTeamRequest.toEntity(MatchStatus.POSSIBLE, authId);
     teamRepository.save(team);
     belongService.doBelong(members, team);
@@ -74,7 +73,7 @@ public class TeamService {
   }
 
   public Team findTeamById(Long teamId) {
-    return teamRepository.findById(teamId).orElseThrow(IllegalArgumentException::new);
+    return teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다."));
   }
 
   public void isLeader(Team team, Long authId) {
@@ -98,7 +97,7 @@ public class TeamService {
     }
   }
 
-  private List<Member> findMembersByTeam(Team team) {
+  public List<Member> findMembersByTeam(Team team) {
     List<Member> members = new ArrayList<>();
     team.getBelongs().forEach(belong -> members.add(belong.getMember()));
     return members;
