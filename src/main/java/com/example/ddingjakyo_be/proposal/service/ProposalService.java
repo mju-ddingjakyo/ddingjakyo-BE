@@ -2,6 +2,8 @@ package com.example.ddingjakyo_be.proposal.service;
 
 import com.example.ddingjakyo_be.belong.service.BelongService;
 import com.example.ddingjakyo_be.common.exception.NoAuthException;
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
+import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
@@ -10,6 +12,7 @@ import com.example.ddingjakyo_be.proposal.controller.dto.response.ReceiveProposa
 import com.example.ddingjakyo_be.proposal.controller.dto.response.SendProposalResponse;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.proposal.repository.ProposalRepository;
+import com.example.ddingjakyo_be.team.controller.dto.response.GetOneTeamResponse;
 import com.example.ddingjakyo_be.team.domain.Team;
 import com.example.ddingjakyo_be.team.service.TeamService;
 import java.util.List;
@@ -41,14 +44,17 @@ public class ProposalService {
   public SendProposalResponse getSendProposal(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team).orElseThrow(IllegalArgumentException::new);
-    return SendProposalResponse.from(proposal);
+    GetOneTeamResponse getOneTeamResponse = teamService.getOneTeam(proposal.getReceiverTeam().getId());
+    return SendProposalResponse.from(proposal, getOneTeamResponse);
   }
 
   public List<ReceiveProposalResponse> getReceiveProposals(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team).orElseThrow(IllegalArgumentException::new);
+    List<MemberProfileResponse> membersProfile = getMembersProfile(team);
+
     return proposals.stream()
-        .map(ReceiveProposalResponse::from)
+        .map(proposal -> ReceiveProposalResponse.from(proposal, membersProfile))
         .toList();
   }
 
@@ -66,6 +72,13 @@ public class ProposalService {
     Team senderTeam = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(senderTeam).orElseThrow(IllegalArgumentException::new);
     proposal.rejectProposal();
+  }
+
+  private List<MemberProfileResponse> getMembersProfile(Team team) {
+    List<Member> members = teamService.findMembersByTeam(team);
+    return members.stream()
+        .map(MemberProfileResponse::from)
+        .toList();
   }
 
   private void isProposal(Long authId) {

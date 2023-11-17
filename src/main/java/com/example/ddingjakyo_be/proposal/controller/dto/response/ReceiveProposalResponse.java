@@ -1,7 +1,9 @@
 package com.example.ddingjakyo_be.proposal.controller.dto.response;
 
+import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
-import com.example.ddingjakyo_be.team.domain.Team;
+import com.example.ddingjakyo_be.team.controller.dto.response.GetAllTeamResponse;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReceiveProposalResponse {
 
-  private Team sendTeam;
+  private GetAllTeamResponse sendTeam;
 
   @Builder
-  public ReceiveProposalResponse(Team sendTeam) {
+  public ReceiveProposalResponse(GetAllTeamResponse sendTeam) {
     this.sendTeam = sendTeam;
   }
 
-  public static ReceiveProposalResponse from(Proposal proposal) {
+  public static ReceiveProposalResponse from(Proposal proposal, List<MemberProfileResponse> membersProfile) {
     return ReceiveProposalResponse.builder()
-        .sendTeam(proposal.getSenderTeam())
+        .sendTeam(GetAllTeamResponse.of(proposal.getSenderTeam(), membersProfile))
         .build();
   }
 }

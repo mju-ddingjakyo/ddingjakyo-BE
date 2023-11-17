@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetOneTeamResponse {
 
+  private Long teamId;
+
   private String name;
 
   private int gender;
@@ -26,7 +28,8 @@ public class GetOneTeamResponse {
   private List<MemberResponse> membersResponse;
 
   @Builder
-  public GetOneTeamResponse(String name, int gender, String content, int memberCount, Long leaderId, String matchStatus, List<MemberResponse> membersResponse) {
+  public GetOneTeamResponse(Long teamId, String name, int gender, String content, int memberCount, Long leaderId, String matchStatus, List<MemberResponse> membersResponse) {
+    this.teamId =teamId;
     this.name = name;
     this.gender = gender;
     this.content = content;
@@ -38,6 +41,7 @@ public class GetOneTeamResponse {
 
   public static GetOneTeamResponse of(Team team, List<MemberResponse> membersResponse) {
     return GetOneTeamResponse.builder()
+        .teamId(team.getId())
         .name(team.getName())
         .gender(team.getGender().getIdentifier())
         .content(team.getContent())
