@@ -50,7 +50,7 @@ public class MemberController {
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_REQUEST),
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.BAD_CREDENTIAL),
         HttpStatus.BAD_GATEWAY);
   }
 
