@@ -9,46 +9,54 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@PropertySource("classpath:email.properties")
 public class EmailService {
 
   private final JavaMailSender emailSender;
+  private final ResourceLoader resourceLoader;
   private final Map<String, String> authBoard = new ConcurrentHashMap<>();
   private static final String AUTH_CODE_PLACEHOLDER = "YOUR_AUTH_CODE";
   private static final String verificationCode = createKey();
+  private static final String univDomain = "mju.ac.kr";
 
-  @Value("AdminMail.univ.domain")
-  private String univDomain;
 
-  public EmailConfirmResponse sendEmail(String to) throws MessagingException {
+  public EmailConfirmResponse sendEmail(String to) throws Exception {
     boolean success = hasValidUnivDomain(to);
-    String message = "학교 이메일을 입력해주세요.";
+    String message = "학교 이메일 형식에 맞지 않습니다.";
 
     if (success) {
       MimeMessage mail = createMailContent(to);
 
       try {
         emailSender.send(mail);
+        System.out.println(message);
         message = "인증 코드가 성공적으로 전송되었습니다.";
       } catch (MailException e) {
+        e.printStackTrace();
         success = false;
         message = "이메일 전송에 실패했습니다.";
       }
     }
 
+    System.out.println(message);
     return EmailConfirmResponse.of(success, message);
   }
 
@@ -68,35 +76,32 @@ public class EmailService {
     return EmailConfirmResponse.of(success, message);
   }
 
-  private MimeMessage createMailContent(String to) throws MessagingException {
+  private MimeMessage createMailContent(String to)
+      throws MessagingException, UnsupportedEncodingException {
 
     MimeMessage message = emailSender.createMimeMessage();
 
     message.addRecipients(RecipientType.TO, to);
     message.setSubject("띵작교 이메일 인증");
 
-    StringBuffer content = new StringBuffer();
+    String content = "";
 
     try {
-      BufferedReader in = new BufferedReader(
-          new FileReader("resource/static/email-certification.html"));
-      String str;
-      while ((str = in.readLine()) != null) {
-        content.append(str);
-      }
-      in.close();
+      Resource resource = resourceLoader.getResource("classpath:email-certification.txt");
+      content = Files.readString(Path.of(resource.getURI()));
     } catch (IOException e) {
       System.out.println("File Read Error");
     }
 
     String authCode = verificationCode;
+    System.out.println("파일 읽음 Authcode: " + authCode);
     // 멤버의 이메일 정보와 인증 코드를 저장
     authBoard.put(to, authCode);
     // YOUR_AUTH_CODE 부분을 인증 코드로 변경
-    String emailText = content.toString().replace(AUTH_CODE_PLACEHOLDER, authCode);
-
+    String emailText = content.replace(AUTH_CODE_PLACEHOLDER, authCode);
+    System.out.println("content: " + emailText);
     message.setText(emailText, "utf-8", "html");
-    message.setFrom(new InternetAddress("띵작교"));
+    message.setFrom(new InternetAddress("gopremium0131@gmail.com", "띵작교"));
 
     return message;
   }
@@ -123,6 +128,10 @@ public class EmailService {
 
   // 이메일의 대학명 체크
   private boolean hasValidUnivDomain(String email) {
-    return email.contains(univDomain);
+    StringTokenizer st = new StringTokenizer(email, "@");
+    String local = st.nextToken();
+    String domain = st.nextToken();
+
+    return domain.equals(univDomain);
   }
 }
