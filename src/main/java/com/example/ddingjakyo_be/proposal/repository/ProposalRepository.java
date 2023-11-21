@@ -1,5 +1,6 @@
 package com.example.ddingjakyo_be.proposal.repository;
 
+import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.team.domain.Team;
 import java.util.List;
@@ -10,4 +11,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
   Optional<Proposal> findBySenderTeam(Team team);
   Optional<List<Proposal>> findAllByReceiverTeam(Team team);
+
+  Optional<List<Proposal>> findAllBySenderTeamOrReceiverTeamAndProposalStatus(Team senderTeam,
+      Team receiverTeam, ProposalStatus proposalStatus);
 }

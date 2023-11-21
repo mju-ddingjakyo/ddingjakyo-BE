@@ -5,8 +5,8 @@ import com.example.ddingjakyo_be.common.message.ResponseMessage;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.response.ApproveMatchingResponse;
-import com.example.ddingjakyo_be.proposal.controller.dto.response.ReceiveProposalResponse;
-import com.example.ddingjakyo_be.proposal.controller.dto.response.SendProposalResponse;
+import com.example.ddingjakyo_be.proposal.controller.dto.response.ProposalsResponse;
+import com.example.ddingjakyo_be.proposal.controller.dto.response.ProposalResponse;
 import com.example.ddingjakyo_be.proposal.service.ProposalService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +36,22 @@ public class ProposalController {
 
   @GetMapping("/proposal/send-proposal")
   public ResponseEntity<ResponseMessage> getSendProposal(@SessionAttribute("memberId") Long authId) {
-    SendProposalResponse sendProposalResponse = proposalService.getSendProposal(authId);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sendProposalResponse);
+    ProposalResponse proposalResponse = proposalService.getSendProposal(authId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, proposalResponse);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @GetMapping("/proposal/receive-proposals")
   public ResponseEntity<ResponseMessage> getReceiveProposals(@SessionAttribute("memberId") Long authId) {
-    List<ReceiveProposalResponse> receiveProposals = proposalService.getReceiveProposals(authId);
+    List<ProposalsResponse> receiveProposals = proposalService.getReceiveProposals(authId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, receiveProposals);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  @GetMapping("/proposal/complete-proposal")
+  public ResponseEntity<ResponseMessage> getCompleteProposals(@SessionAttribute("memberId") Long authId){
+    List<ProposalsResponse> completeProposals = proposalService.getCompleteProposals(authId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, completeProposals);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
