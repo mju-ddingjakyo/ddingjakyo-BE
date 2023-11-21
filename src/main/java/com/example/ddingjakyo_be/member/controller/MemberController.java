@@ -72,9 +72,14 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
+  @PostMapping("/email_certification/test")
+  public ResponseEntity<ResponseMessage> test() {
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.OK), HttpStatus.OK);
+  }
+
   @PostMapping("/email_certification")
   public ResponseEntity<ResponseMessage> certify(
-      @RequestParam(value = "email", required = false) String email) throws MessagingException {
+      @RequestParam(value = "email", required = false) String email) throws Exception {
     EmailConfirmResponse response = emailService.sendEmail(email);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
