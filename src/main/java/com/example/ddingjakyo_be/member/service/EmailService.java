@@ -47,7 +47,6 @@ public class EmailService {
 
       try {
         emailSender.send(mail);
-        System.out.println(message);
         message = "인증 코드가 성공적으로 전송되었습니다.";
       } catch (MailException e) {
         e.printStackTrace();
@@ -56,7 +55,6 @@ public class EmailService {
       }
     }
 
-    System.out.println(message);
     return EmailConfirmResponse.of(success, message);
   }
 
@@ -67,7 +65,7 @@ public class EmailService {
     String authCode = authBoard.get(email);
 
     boolean success = Objects.equals(memberAuthCode, authCode);
-    String message = "성공";
+    String message = null;
 
     if (!success) {
       message = "인증 코드를 다시 확인해주세요.";
@@ -94,12 +92,10 @@ public class EmailService {
     }
 
     String authCode = verificationCode;
-    System.out.println("파일 읽음 Authcode: " + authCode);
     // 멤버의 이메일 정보와 인증 코드를 저장
     authBoard.put(to, authCode);
     // YOUR_AUTH_CODE 부분을 인증 코드로 변경
     String emailText = content.replace(AUTH_CODE_PLACEHOLDER, authCode);
-    System.out.println("content: " + emailText);
     message.setText(emailText, "utf-8", "html");
     message.setFrom(new InternetAddress("gopremium0131@gmail.com", "띵작교"));
 
@@ -107,16 +103,16 @@ public class EmailService {
   }
 
   private static String createKey() {
-    StringBuffer key = new StringBuffer();
+    StringBuilder key = new StringBuilder();
     Random random = new Random();
 
     for (int i = 0; i < 8; i++) {
       int index = random.nextInt(3); // 0~2 까지 랜덤
 
       switch (index) {
-        case 0 -> key.append((char) (random.nextInt(26)) + 97);
+        case 0 -> key.append((char) ((random.nextInt(26)) + 97));
         //  a~z  (ex. 1+97=98 => (char)98 = 'b')
-        case 1 -> key.append((char) (random.nextInt(26)) + 65);
+        case 1 -> key.append((char) ((random.nextInt(26)) + 65));
         //  A~Z
         case 2 -> key.append(random.nextInt(10));
         // 0~9
