@@ -8,8 +8,8 @@ import com.example.ddingjakyo_be.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.request.MatchingResultRequest;
 import com.example.ddingjakyo_be.proposal.controller.dto.response.ApproveMatchingResponse;
-import com.example.ddingjakyo_be.proposal.controller.dto.response.ReceiveProposalResponse;
-import com.example.ddingjakyo_be.proposal.controller.dto.response.SendProposalResponse;
+import com.example.ddingjakyo_be.proposal.controller.dto.response.ProposalsResponse;
+import com.example.ddingjakyo_be.proposal.controller.dto.response.ProposalResponse;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.proposal.repository.ProposalRepository;
 import com.example.ddingjakyo_be.team.controller.dto.response.GetOneTeamResponse;
@@ -41,20 +41,31 @@ public class ProposalService {
     proposalRepository.save(proposal);
   }
 
-  public SendProposalResponse getSendProposal(Long authId) {
+  public ProposalResponse getSendProposal(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team).orElseThrow(IllegalArgumentException::new);
     GetOneTeamResponse getOneTeamResponse = teamService.getOneTeam(proposal.getReceiverTeam().getId());
-    return SendProposalResponse.from(proposal, getOneTeamResponse);
+    return ProposalResponse.from(proposal, getOneTeamResponse);
   }
 
-  public List<ReceiveProposalResponse> getReceiveProposals(Long authId) {
+  public List<ProposalsResponse> getReceiveProposals(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team).orElseThrow(IllegalArgumentException::new);
     List<MemberProfileResponse> membersProfile = getMembersProfile(team);
 
     return proposals.stream()
-        .map(proposal -> ReceiveProposalResponse.from(proposal, membersProfile))
+        .map(proposal -> ProposalsResponse.from(proposal, membersProfile))
+        .toList();
+  }
+
+  public List<ProposalsResponse> getCompleteProposals(Long authId) {
+    Team team = belongService.findTeamByMemberId(authId);
+    List<Proposal> proposals = proposalRepository.findAllBySenderTeamOrReceiverTeamAndProposalStatus(team, team, ProposalStatus.APPROVED)
+        .orElseThrow(() -> new IllegalArgumentException("매칭 완료된 팀이 없습니다."));
+    List<MemberProfileResponse> membersProfile = getMembersProfile(team);
+
+    return proposals.stream()
+        .map(proposal -> ProposalsResponse.from(proposal, membersProfile))
         .toList();
   }
 
