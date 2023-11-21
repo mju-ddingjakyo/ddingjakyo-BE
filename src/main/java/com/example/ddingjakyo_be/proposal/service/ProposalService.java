@@ -79,7 +79,7 @@ public class ProposalService {
     Team team = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     teamService.isLeader(team, matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(team)
-        .orElseThrow(IllegalArgumentException::new);
+        .orElseThrow(()-> new IllegalArgumentException("매칭 신청한 팀이 아닙니다."));
     proposal.approveProposal();
     proposal.getReceiverTeam().completeMatching();
     proposal.getSenderTeam().completeMatching();
@@ -89,7 +89,7 @@ public class ProposalService {
   public void rejectMatching(MatchingResultRequest matchingResultRequest) {
     Team senderTeam = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(senderTeam)
-        .orElseThrow(IllegalArgumentException::new);
+        .orElseThrow(()-> new IllegalArgumentException("매칭 신청한 팀이 아닙니다."));
     proposal.rejectProposal();
   }
 
