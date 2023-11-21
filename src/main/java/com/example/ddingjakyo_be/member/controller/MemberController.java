@@ -10,7 +10,6 @@ import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileRes
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.service.EmailService;
 import com.example.ddingjakyo_be.member.service.MemberService;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.Objects;

@@ -3,7 +3,6 @@ package com.example.ddingjakyo_be.config;
 import com.example.ddingjakyo_be.interceptor.LogInCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
