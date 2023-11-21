@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
   Optional<Proposal> findBySenderTeam(Team team);
-  Optional<List<Proposal>> findAllByReceiverTeam(Team team);
+  List<Proposal> findAllByReceiverTeam(Team team);
 
-  Optional<List<Proposal>> findAllBySenderTeamOrReceiverTeamAndProposalStatus(Team senderTeam,
+  List<Proposal> findAllBySenderTeamOrReceiverTeamAndProposalStatus(Team senderTeam,
       Team receiverTeam, ProposalStatus proposalStatus);
 }

@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ProposalResponse {
-  private GetOneTeamResponse recieveTeam;
+  private GetOneTeamResponse receiveTeam;
 
   private String matchStatus;
   @Builder
-  public ProposalResponse(GetOneTeamResponse recieveTeam, String matchStatus) {
-    this.recieveTeam = recieveTeam;
+  public ProposalResponse(GetOneTeamResponse receiveTeam, String matchStatus) {
+    this.receiveTeam = receiveTeam;
     this.matchStatus = matchStatus;
   }
 
   public static ProposalResponse from(Proposal proposal, GetOneTeamResponse getOneTeamResponse) {
     return ProposalResponse.builder()
-        .recieveTeam(getOneTeamResponse)
+        .receiveTeam(getOneTeamResponse)
         .matchStatus(String.valueOf(proposal.getProposalStatus()))
         .build();
   }
