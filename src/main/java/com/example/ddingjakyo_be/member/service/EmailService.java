@@ -6,10 +6,7 @@ import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +16,6 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.MailException;
@@ -35,6 +31,7 @@ public class EmailService {
   private final Map<String, String> authBoard = new ConcurrentHashMap<>();
   private static final String AUTH_CODE_PLACEHOLDER = "YOUR_AUTH_CODE";
   private static final String verificationCode = createKey();
+  private static final String emailDelimiter = "@";
   private static final String univDomain = "mju.ac.kr";
 
 
@@ -47,7 +44,6 @@ public class EmailService {
 
       try {
         emailSender.send(mail);
-        System.out.println(message);
         message = "인증 코드가 성공적으로 전송되었습니다.";
       } catch (MailException e) {
         e.printStackTrace();
@@ -56,7 +52,6 @@ public class EmailService {
       }
     }
 
-    System.out.println(message);
     return EmailConfirmResponse.of(success, message);
   }
 
@@ -67,7 +62,7 @@ public class EmailService {
     String authCode = authBoard.get(email);
 
     boolean success = Objects.equals(memberAuthCode, authCode);
-    String message = "성공";
+    String message = null;
 
     if (!success) {
       message = "인증 코드를 다시 확인해주세요.";
@@ -87,19 +82,17 @@ public class EmailService {
     String content = "";
 
     try {
-      Resource resource = resourceLoader.getResource("classpath:email-certification.txt");
+      Resource resource = resourceLoader.getResource("classpath:static/email-certification.txt");
       content = Files.readString(Path.of(resource.getURI()));
     } catch (IOException e) {
       System.out.println("File Read Error");
     }
 
     String authCode = verificationCode;
-    System.out.println("파일 읽음 Authcode: " + authCode);
     // 멤버의 이메일 정보와 인증 코드를 저장
     authBoard.put(to, authCode);
     // YOUR_AUTH_CODE 부분을 인증 코드로 변경
     String emailText = content.replace(AUTH_CODE_PLACEHOLDER, authCode);
-    System.out.println("content: " + emailText);
     message.setText(emailText, "utf-8", "html");
     message.setFrom(new InternetAddress("gopremium0131@gmail.com", "띵작교"));
 
@@ -107,16 +100,16 @@ public class EmailService {
   }
 
   private static String createKey() {
-    StringBuffer key = new StringBuffer();
+    StringBuilder key = new StringBuilder();
     Random random = new Random();
 
     for (int i = 0; i < 8; i++) {
       int index = random.nextInt(3); // 0~2 까지 랜덤
 
       switch (index) {
-        case 0 -> key.append((char) (random.nextInt(26)) + 97);
+        case 0 -> key.append((char) ((random.nextInt(26)) + 97));
         //  a~z  (ex. 1+97=98 => (char)98 = 'b')
-        case 1 -> key.append((char) (random.nextInt(26)) + 65);
+        case 1 -> key.append((char) ((random.nextInt(26)) + 65));
         //  A~Z
         case 2 -> key.append(random.nextInt(10));
         // 0~9
@@ -128,7 +121,7 @@ public class EmailService {
 
   // 이메일의 대학명 체크
   private boolean hasValidUnivDomain(String email) {
-    StringTokenizer st = new StringTokenizer(email, "@");
+    StringTokenizer st = new StringTokenizer(email, emailDelimiter);
     String local = st.nextToken();
     String domain = st.nextToken();
 

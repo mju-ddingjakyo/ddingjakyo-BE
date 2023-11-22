@@ -3,7 +3,6 @@ package com.example.ddingjakyo_be.config;
 import com.example.ddingjakyo_be.interceptor.LogInCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -16,11 +15,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .excludePathPatterns("/api/log*", "/api/register", "/api/email*",
             "/api/email_certification/confirm",
             "/api/teams"); // login, logout, 회원가입, 이메일 인증, 전체 팀 조회 URI는 인터셉터 실행에서 제외
-  }
-
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/")
-        .setCachePeriod(60 * 60 * 24 * 365);
   }
 }

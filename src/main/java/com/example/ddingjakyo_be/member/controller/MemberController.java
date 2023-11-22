@@ -10,7 +10,6 @@ import com.example.ddingjakyo_be.member.controller.dto.response.MemberProfileRes
 import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.service.EmailService;
 import com.example.ddingjakyo_be.member.service.MemberService;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.Objects;
@@ -72,25 +71,18 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @PostMapping("/email_certification/test")
-  public ResponseEntity<ResponseMessage> test() {
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.OK), HttpStatus.OK);
-  }
-
   @PostMapping("/email_certification")
   public ResponseEntity<ResponseMessage> certify(
       @RequestParam(value = "email", required = false) String email) throws Exception {
     EmailConfirmResponse response = emailService.sendEmail(email);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return createResponse(response);
   }
 
   @PostMapping("/email_certification/confirm")
   public ResponseEntity<ResponseMessage> confirm(
       @RequestBody EmailConfirmRequest emailConfirmRequest) {
     EmailConfirmResponse response = emailService.checkVerificationCode(emailConfirmRequest);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return createResponse(response);
   }
 
   @GetMapping("/member/{memberId}")
@@ -146,5 +138,20 @@ public class MemberController {
     }
 
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
+  }
+
+  private ResponseEntity<ResponseMessage> createResponse(EmailConfirmResponse response) {
+    ResponseMessage responseMessage;
+    HttpStatus httpStatus;
+
+    if (!response.isSuccess()) {
+      responseMessage = ResponseMessage.of(ResponseStatus.BAD_REQUEST, response);
+      httpStatus = HttpStatus.BAD_REQUEST;
+    } else {
+      responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
+      httpStatus = HttpStatus.OK;
+    }
+
+    return new ResponseEntity<>(responseMessage, httpStatus);
   }
 }
