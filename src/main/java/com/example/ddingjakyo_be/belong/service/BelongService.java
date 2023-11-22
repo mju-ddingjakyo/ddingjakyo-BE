@@ -7,6 +7,7 @@ import com.example.ddingjakyo_be.member.service.MemberService;
 import com.example.ddingjakyo_be.team.domain.Team;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class BelongService {
 
   private final MemberService memberService;
 
-  public void doBelong(List<Member> members, Team team) {
+  public void doBelong(Set<Member> members, Team team) {
 
     for (Member member : members) {
       Belong belong = Belong.belongTo(member, team);
@@ -27,7 +28,7 @@ public class BelongService {
     }
   }
 
-  public void update(List<Member> members, Team team) {
+  public void update(Set<Member> members, Team team) {
     // 해당 팀에 속한 모든 Belong 엔티티 가져오기
     List<Belong> belongs = belongRepository.findAllByTeam(team).orElseThrow(IllegalArgumentException::new);
     // 기존의 모든 Belong 삭제
