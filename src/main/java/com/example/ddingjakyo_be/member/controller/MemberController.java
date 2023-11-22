@@ -87,6 +87,14 @@ public class MemberController {
     return createResponse(response);
   }
 
+  @GetMapping("/member/my")
+  public ResponseEntity<ResponseMessage> getMyPage(
+      @SessionAttribute("memberId") final Long myAuthId) {
+    MemberResponse memberResponse = memberService.getMemberProfileById(myAuthId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberResponse);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
   @GetMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable final Long memberId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
@@ -112,37 +120,23 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @PutMapping("/member/{memberId}")
+  @PutMapping("/member")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
-      @SessionAttribute(value = "memberId", required = false) final Long authId,
-      @RequestBody @Valid final MemberProfileRequest updateMemberProfile,
-      @PathVariable final Long memberId) {
-
-    if (Objects.equals(authId, memberId)) {
-      memberService.updateMemberProfile(updateMemberProfile, memberId);
-      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
-      return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-    }
-
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN),
-        HttpStatus.FORBIDDEN);
+      @SessionAttribute(value = "memberId", required = false) final Long myAuthId,
+      @RequestBody @Valid final MemberProfileRequest updateMemberProfile) {
+    memberService.updateMemberProfile(updateMemberProfile, myAuthId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @DeleteMapping("/member/{memberId}")
+  @DeleteMapping("/member")
   public ResponseEntity<ResponseMessage> deleteMember(
-      @SessionAttribute(value = "memberId", required = false) final Long authId,
-      @PathVariable final Long memberId, HttpServletRequest request) {
-
-    if (Objects.equals(authId, memberId)) {
-      memberService.deleteMember(memberId);
-      // 세션 무효화
-      request.getSession().invalidate();
-      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
-      return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-    }
-
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN),
-        HttpStatus.FORBIDDEN);
+      @SessionAttribute(value = "memberId", required = false) final Long myAuthId,
+      HttpServletRequest request) {
+    memberService.deleteMember(myAuthId);
+    request.getSession().invalidate();   // 세션 무효화
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   private ResponseEntity<ResponseMessage> createResponse(final EmailConfirmResponse response) {
