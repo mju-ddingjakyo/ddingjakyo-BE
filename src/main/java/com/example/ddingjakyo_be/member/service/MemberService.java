@@ -7,8 +7,9 @@ import com.example.ddingjakyo_be.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.member.domain.Member;
 import com.example.ddingjakyo_be.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,16 +59,10 @@ public class MemberService {
     return MemberProfileResponse.from(member);
   }
 
-  public List<Member> findMembersByEmails(final List<String> emails) {
-    List<Member> members = new ArrayList<>();
-
-    for (String email : emails) {
-      Member member = memberRepository.findMemberByEmail(email)
-          .orElseThrow(IllegalArgumentException::new);
-      members.add(member);
-    }
-
-    return members;
+  public Set<Member> findMembersByEmails(final List<String> emails) {
+      return emails.stream()
+          .map(email -> memberRepository.findMemberByEmail(email).orElseThrow(()-> new IllegalArgumentException("이메일이 틀렸습니다")))
+          .collect(Collectors.toSet());
   }
 
   public Member findMemberById(Long memberId) {

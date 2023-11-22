@@ -15,6 +15,8 @@ import com.example.ddingjakyo_be.team.domain.Team;
 import com.example.ddingjakyo_be.team.repository.TeamRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,15 @@ public class TeamService {
   private final BelongService belongService;
 
   public void createTeam(Long authId, CreateTeamRequest createTeamRequest) {
-    List<Member> members = memberService.findMembersByEmails(createTeamRequest.getMembersEmail());
-    //leaderid는 하나의 팀만 만들 수 있다.
-    checkUserCreatedTeam(authId);
+    validateUserCreatedTeam(authId);
+
+    Set<Member> members = memberService.findMembersByEmails(createTeamRequest.getMembersEmail());
+    Member member = memberService.findMemberById(authId);
+    members.add(member);
+
     Team team = createTeamRequest.toEntity(MatchStatus.POSSIBLE, authId);
+    validateTeamInfo(members, team);
+
     teamRepository.save(team);
     belongService.doBelong(members, team);
   }
@@ -66,9 +73,10 @@ public class TeamService {
   public void updateTeam(Long authId, UpdateTeamRequest updateTeamRequest, Long teamId) {
     Team team = findTeamById(teamId);
     isLeader(team, authId);
-    team.update(updateTeamRequest.getName(), updateTeamRequest.getContent(), updateTeamRequest.getMemberCount());
+    Set<Member> members = memberService.findMembersByEmails(updateTeamRequest.getMembersEmail());
+    validateTeamInfo(members, team);
 
-    List<Member> members = memberService.findMembersByEmails(updateTeamRequest.getMembersEmail());
+    team.update(updateTeamRequest.getName(), updateTeamRequest.getContent(), updateTeamRequest.getMemberCount());
     belongService.update(members, team);
   }
 
@@ -76,14 +84,16 @@ public class TeamService {
     return teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다."));
   }
 
-  public void isLeader(Team team, Long authId) {
-    if(team.getLeaderId() != authId){
-      throw new NoAuthException();
-    }
+  public List<Member> findMembersByTeam(Team team) {
+    List<Member> members = new ArrayList<>();
+    team.getBelongs().forEach(belong -> members.add(belong.getMember()));
+    return members;
   }
 
-  private void checkUserCreatedTeam(Long authId){
-    teamRepository.findByLeaderId(authId).ifPresent(team->{throw new NoAuthException();});
+  public void isLeader(Team team, Long authId) {
+    if(!Objects.equals(team.getLeaderId(), authId)){
+      throw new NoAuthException("리더가 아닙니다.");
+    }
   }
 
   private void addTeamResponse(List<GetAllTeamResponse> getAllTeamResponses) {
@@ -97,9 +107,25 @@ public class TeamService {
     }
   }
 
-  public List<Member> findMembersByTeam(Team team) {
-    List<Member> members = new ArrayList<>();
-    team.getBelongs().forEach(belong -> members.add(belong.getMember()));
-    return members;
+  private void validateUserCreatedTeam(Long authId){
+    teamRepository.findByLeaderId(authId).ifPresent(team->{throw new NoAuthException("한 명의 유저는 한 팀만 생성할 수 있습니다.");});
+  }
+  private void validateTeamInfo(Set<Member> members, Team team) {
+    validateMemberGender(team, members);
+    validateMemberCount(team, members);
+  }
+
+  private void validateMemberGender(Team team, Set<Member> members) {
+    members.stream()
+        .filter(member -> !Objects.equals(member.getGender(), team.getGender()))
+        .findAny()
+        .ifPresent(member -> {throw new IllegalArgumentException("멤버의 성별은 팀의 성별과 같아야 합니다.");});
+  }
+
+  private void validateMemberCount(Team team, Set<Member> members) {
+    members.stream()
+        .filter(member -> !Objects.equals(members.size(), team.getMemberCount()))
+        .findAny()
+        .ifPresent(member -> {throw new IllegalArgumentException("팀의 멤버수와 입력한 멤버 수가 맞지 않습니다.");});
   }
 }
