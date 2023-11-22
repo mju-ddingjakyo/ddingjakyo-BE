@@ -12,6 +12,7 @@ import com.example.ddingjakyo_be.member.service.EmailService;
 import com.example.ddingjakyo_be.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,28 +66,29 @@ public class MemberController {
 
   @PostMapping("/register")
   public ResponseEntity<ResponseMessage> register(
-      @RequestBody MemberAuthRequest memberAuthRequest) {
+      final @RequestBody @Valid MemberAuthRequest memberAuthRequest) {
+    ResponseMessage responseMessage;
     memberService.register(memberAuthRequest);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @PostMapping("/email_certification")
   public ResponseEntity<ResponseMessage> certify(
-      @RequestParam(value = "email", required = false) String email) throws Exception {
+      @RequestParam(value = "email", required = false) final String email) throws Exception {
     EmailConfirmResponse response = emailService.sendEmail(email);
     return createResponse(response);
   }
 
   @PostMapping("/email_certification/confirm")
   public ResponseEntity<ResponseMessage> confirm(
-      @RequestBody EmailConfirmRequest emailConfirmRequest) {
+      final @RequestBody EmailConfirmRequest emailConfirmRequest) {
     EmailConfirmResponse response = emailService.checkVerificationCode(emailConfirmRequest);
     return createResponse(response);
   }
 
   @GetMapping("/member/{memberId}")
-  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId) {
+  public ResponseEntity<ResponseMessage> getMemberById(@PathVariable final Long memberId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberResponse);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -94,7 +96,7 @@ public class MemberController {
 
   @GetMapping("/member")
   public ResponseEntity<ResponseMessage> getMemberById(
-      @RequestParam(value = "email", required = false) String email) {
+      @RequestParam(value = "email", required = false) final String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -102,18 +104,19 @@ public class MemberController {
 
   @PostMapping("/member")
   public ResponseEntity<ResponseMessage> createMemberProfile(
-      @SessionAttribute("memberId") Long memberId,
-      @RequestBody MemberProfileRequest memberProfileRequest) {
+      @SessionAttribute("memberId") final Long memberId,
+      @RequestBody @Valid final MemberProfileRequest memberProfileRequest) {
+    ResponseMessage responseMessage;
     memberService.createMemberProfile(memberId, memberProfileRequest);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @PutMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
-      @SessionAttribute(value = "memberId", required = false) Long authId,
-      @RequestBody MemberProfileRequest updateMemberProfile,
-      @PathVariable Long memberId) {
+      @SessionAttribute(value = "memberId", required = false) final Long authId,
+      @RequestBody @Valid final MemberProfileRequest updateMemberProfile,
+      @PathVariable final Long memberId) {
 
     if (Objects.equals(authId, memberId)) {
       memberService.updateMemberProfile(updateMemberProfile, memberId);
@@ -121,13 +124,14 @@ public class MemberController {
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN),
+        HttpStatus.FORBIDDEN);
   }
 
   @DeleteMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> deleteMember(
-      @SessionAttribute(value = "memberId", required = false) Long authId,
-      @PathVariable Long memberId, HttpServletRequest request) {
+      @SessionAttribute(value = "memberId", required = false) final Long authId,
+      @PathVariable final Long memberId, HttpServletRequest request) {
 
     if (Objects.equals(authId, memberId)) {
       memberService.deleteMember(memberId);
@@ -137,10 +141,11 @@ public class MemberController {
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.FORBIDDEN),
+        HttpStatus.FORBIDDEN);
   }
 
-  private ResponseEntity<ResponseMessage> createResponse(EmailConfirmResponse response) {
+  private ResponseEntity<ResponseMessage> createResponse(final EmailConfirmResponse response) {
     ResponseMessage responseMessage;
     HttpStatus httpStatus;
 
