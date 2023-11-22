@@ -12,6 +12,7 @@ import com.example.ddingjakyo_be.member.service.EmailService;
 import com.example.ddingjakyo_be.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,7 @@ public class MemberController {
 
   @PostMapping("/register")
   public ResponseEntity<ResponseMessage> register(
-      @RequestBody MemberAuthRequest memberAuthRequest) {
+      @RequestBody @Valid MemberAuthRequest memberAuthRequest) {
     memberService.register(memberAuthRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -103,7 +104,7 @@ public class MemberController {
   @PostMapping("/member")
   public ResponseEntity<ResponseMessage> createMemberProfile(
       @SessionAttribute("memberId") Long memberId,
-      @RequestBody MemberProfileRequest memberProfileRequest) {
+      @RequestBody @Valid MemberProfileRequest memberProfileRequest) {
     memberService.createMemberProfile(memberId, memberProfileRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -112,7 +113,7 @@ public class MemberController {
   @PutMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
       @SessionAttribute(value = "memberId", required = false) Long authId,
-      @RequestBody MemberProfileRequest updateMemberProfile,
+      @RequestBody @Valid MemberProfileRequest updateMemberProfile,
       @PathVariable Long memberId) {
 
     if (Objects.equals(authId, memberId)) {
