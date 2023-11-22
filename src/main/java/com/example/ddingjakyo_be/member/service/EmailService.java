@@ -31,6 +31,7 @@ public class EmailService {
   private final Map<String, String> authBoard = new ConcurrentHashMap<>();
   private static final String AUTH_CODE_PLACEHOLDER = "YOUR_AUTH_CODE";
   private static final String verificationCode = createKey();
+  private static final String emailDelimiter = "@";
   private static final String univDomain = "mju.ac.kr";
 
 
@@ -81,7 +82,7 @@ public class EmailService {
     String content = "";
 
     try {
-      Resource resource = resourceLoader.getResource("classpath:email-certification.txt");
+      Resource resource = resourceLoader.getResource("classpath:static/email-certification.txt");
       content = Files.readString(Path.of(resource.getURI()));
     } catch (IOException e) {
       System.out.println("File Read Error");
@@ -120,7 +121,7 @@ public class EmailService {
 
   // 이메일의 대학명 체크
   private boolean hasValidUnivDomain(String email) {
-    StringTokenizer st = new StringTokenizer(email, "@");
+    StringTokenizer st = new StringTokenizer(email, emailDelimiter);
     String local = st.nextToken();
     String domain = st.nextToken();
 

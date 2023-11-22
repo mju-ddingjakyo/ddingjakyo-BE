@@ -71,11 +71,6 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @PostMapping("/email_certification/test")
-  public ResponseEntity<ResponseMessage> test() {
-    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.OK), HttpStatus.OK);
-  }
-
   @PostMapping("/email_certification")
   public ResponseEntity<ResponseMessage> certify(
       @RequestParam(value = "email", required = false) String email) throws Exception {
@@ -89,7 +84,6 @@ public class MemberController {
     EmailConfirmResponse response = emailService.checkVerificationCode(emailConfirmRequest);
     return createResponse(response);
   }
-
 
   @GetMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable Long memberId) {
