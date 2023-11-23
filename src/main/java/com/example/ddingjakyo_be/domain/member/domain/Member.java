@@ -44,7 +44,6 @@ public class Member extends BaseEntity {
 
   private String introduction;
 
-  @Column(columnDefinition = "TEXT")
   private String profileImage;
 
   @OneToMany(mappedBy = "member")

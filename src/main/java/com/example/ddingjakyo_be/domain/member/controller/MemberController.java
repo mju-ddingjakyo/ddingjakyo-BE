@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -112,7 +113,7 @@ public class MemberController {
   @PostMapping("/member")
   public ResponseEntity<ResponseMessage> createMemberProfile(
       @SessionAttribute("memberId") final Long memberId,
-      @RequestBody @Valid final MemberProfileRequest memberProfileRequest) {
+      @ModelAttribute @Valid final MemberProfileRequest memberProfileRequest) {
     ResponseMessage responseMessage;
     memberService.createMemberProfile(memberId, memberProfileRequest);
     responseMessage = ResponseMessage.of(ResponseStatus.OK);
@@ -122,7 +123,7 @@ public class MemberController {
   @PutMapping("/member")
   public ResponseEntity<ResponseMessage> updateMemberProfile(
       @SessionAttribute(value = "memberId", required = false) final Long myAuthId,
-      @RequestBody @Valid final MemberProfileRequest updateMemberProfile) {
+      @ModelAttribute @Valid final MemberProfileRequest updateMemberProfile) {
     memberService.updateMemberProfile(updateMemberProfile, myAuthId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);

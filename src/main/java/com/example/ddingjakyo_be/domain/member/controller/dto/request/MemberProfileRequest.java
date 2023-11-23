@@ -5,10 +5,14 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class MemberProfileRequest {
 
@@ -29,16 +33,16 @@ public class MemberProfileRequest {
 
   private String mbti;
 
-  private String profileImage;
+  private List<MultipartFile> image;
 
-  public Member toEntity() {
+  public Member toEntity(String filename) {
     return Member.builder()
         .nickname(nickname)
         .major(major)
         .introduction(introduction)
         .age(age)
         .mbti(mbti)
-        .profileImage(profileImage)
+        .profileImage(filename)
         .build();
   }
 }
