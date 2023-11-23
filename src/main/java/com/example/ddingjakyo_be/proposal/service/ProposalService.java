@@ -45,6 +45,7 @@ public class ProposalService {
     proposalRepository.save(proposal);
   }
 
+  @Transactional(readOnly = true)
   public ProposalResponse getSendProposal(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team)
@@ -53,6 +54,7 @@ public class ProposalService {
     return ProposalResponse.from(proposal, getOneTeamResponse);
   }
 
+  @Transactional(readOnly = true)
   public List<ProposalsResponse> getReceiveProposals(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllByReceiverTeam(team);
@@ -64,6 +66,7 @@ public class ProposalService {
         .toList();
   }
 
+  @Transactional(readOnly = true)
   public List<ProposalsResponse> getCompleteProposals(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllBySenderTeamOrReceiverTeamAndProposalStatus(team, team, ProposalStatus.APPROVED);
