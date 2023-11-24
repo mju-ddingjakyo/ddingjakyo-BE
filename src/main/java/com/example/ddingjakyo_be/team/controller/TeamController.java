@@ -51,21 +51,25 @@ public class TeamController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @DeleteMapping("/team/{teamId}")
-  public ResponseEntity<ResponseMessage> deleteTeam(@SessionAttribute("memberId") final Long authId,
-      @PathVariable("teamId") final Long teamId) {
-    //httpsession을 통해 sessionId를 가져오고, sessionId를 deleteTeam에 넘겨준다.
-    teamService.deleteTeam(authId, teamId);
+  @GetMapping("/team/my")
+  public ResponseEntity<ResponseMessage> getMyTeam(@SessionAttribute("memberId") final Long authId){
+    GetOneTeamResponse team = teamService.getMyTeam(authId);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, team);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/team")
+  public ResponseEntity<ResponseMessage> deleteTeam(@SessionAttribute("memberId") final Long authId) {
+    teamService.deleteTeam(authId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  @PutMapping("/team/{teamId}")
+  @PutMapping("/team")
   public ResponseEntity<ResponseMessage> updateTeam(
       @SessionAttribute("memberId") final Long authId,
-      @RequestBody TeamProfileRequest updateTeamRequest,
-      @PathVariable("teamId") final Long teamId) {
-    teamService.updateTeam(authId, updateTeamRequest, teamId);
+      @RequestBody TeamProfileRequest updateTeamRequest) {
+    teamService.updateTeam(authId, updateTeamRequest);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }

@@ -63,14 +63,20 @@ public class TeamService {
     return GetOneTeamResponse.of(team, membersResponse);
   }
 
-  public void deleteTeam(Long authId, Long teamId) {
-    Team team = findTeamById(teamId);
+  @Transactional(readOnly = true)
+  public GetOneTeamResponse getMyTeam(Long authId) {
+    Team team = belongService.findTeamByMemberId(authId);
+    return getOneTeam(team.getId());
+  }
+
+  public void deleteTeam(Long authId) {
+    Team team = belongService.findTeamByMemberId(authId);
     isLeader(team, authId);
     teamRepository.delete(team);
   }
 
-  public void updateTeam(Long authId, TeamProfileRequest teamProfileRequest, Long teamId) {
-    Team team = findTeamById(teamId);
+  public void updateTeam(Long authId, TeamProfileRequest teamProfileRequest) {
+    Team team = belongService.findTeamByMemberId(authId);
     isLeader(team, authId);
     Set<Member> members = memberService.findMembersByEmails(teamProfileRequest.getMembersEmail());
     validateTeamInfo(members, team);

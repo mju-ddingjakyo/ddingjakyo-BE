@@ -6,6 +6,7 @@ import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.proposal.domain.Proposal;
 import com.example.ddingjakyo_be.team.constant.MatchStatus;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,6 +32,7 @@ public class Team extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(unique = true)
   private String name;
 
   private int memberCount;
