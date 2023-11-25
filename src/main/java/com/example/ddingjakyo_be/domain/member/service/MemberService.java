@@ -69,12 +69,13 @@ public class MemberService {
   public void updateMemberProfile(MemberProfileRequest memberProfileRequest, Long memberId) {
     Member member = findMemberById(memberId);
     deletePrevImage(member.getProfileImage());
-    Member updateMember = memberProfileRequest.toEntity(getUploadImageFileName(memberProfileRequest));
+    Member updateMember = memberProfileRequest.toEntity(
+        getUploadImageFileName(memberProfileRequest));
     member.updateMemberProfile(updateMember);
   }
 
   private void deletePrevImage(String profileImage) {
-    if(profileImage != null){
+    if (profileImage != null) {
       s3Service.delete(profileImage);
     }
   }
@@ -87,7 +88,8 @@ public class MemberService {
 
   public Set<Member> findMembersByEmails(final List<String> emails) {
     return emails.stream()
-        .map(email -> memberRepository.findMemberByEmail(email).orElseThrow(()-> new IllegalArgumentException("이메일이 틀렸습니다")))
+        .map(email -> memberRepository.findMemberByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("이메일이 틀렸습니다.")))
         .collect(Collectors.toSet());
   }
 
@@ -96,7 +98,7 @@ public class MemberService {
   }
 
   private String getUploadImageFileName(MemberProfileRequest memberProfileRequest) {
-   String fileName = "";
+    String fileName = "";
     for (MultipartFile multipartFile : memberProfileRequest.getImage()) {
       // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
       fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
