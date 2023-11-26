@@ -93,7 +93,8 @@ public class MemberController {
   public ResponseEntity<ResponseMessage> duplicated(
       @RequestParam(value = "email", required = false) final String email) {
     EmailConfirmResponse response = memberService.checkDuplicatedEmail(email);
-    return createEmailConfirmResponse(response);
+    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
   @GetMapping("/member/my")
