@@ -2,6 +2,7 @@ package com.example.ddingjakyo_be.domain.member.service;
 
 import com.example.ddingjakyo_be.aws.S3Service;
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
+import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
 import com.example.ddingjakyo_be.domain.belong.domain.Belong;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -95,22 +97,17 @@ public class MemberService {
   }
 
   public EmailConfirmResponse checkDuplicatedEmail(final String email) {
-    boolean duplicated = false;
     String message;
     boolean success;
 
-    Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+    Optional<Member> member = memberRepository.findMemberByEmail(email);
 
-    );
-
-
-
-    if (!duplicated) {
-      success = true;
-      message = "사용 가능한 이메일입니다.";
-    } else {
+    if (member.isEmpty()) {
       success = false;
       message = "중복된 이메일입니다.";
+    } else {
+      success = true;
+      message = "사용 가능한 이메일입니다.";
     }
 
     return EmailConfirmResponse.of(success, message);
@@ -126,7 +123,7 @@ public class MemberService {
   }
 
   public Member findMemberById(Long memberId) {
-    return memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+    return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
   }
 
   private String getUploadImageFileName(MemberProfileRequest memberProfileRequest) {

@@ -92,8 +92,8 @@ public class MemberController {
   @PostMapping("/email_certification/duplicated")
   public ResponseEntity<ResponseMessage> duplicated(
       @RequestParam(value = "email", required = false) final String email) {
-//    EmailConfirmResponse response = memberService.()
-    return null;
+    EmailConfirmResponse response = memberService.checkDuplicatedEmail(email);
+    return createEmailConfirmResponse(response);
   }
 
   @GetMapping("/member/my")
