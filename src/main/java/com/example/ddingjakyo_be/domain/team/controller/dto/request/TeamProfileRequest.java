@@ -25,7 +25,8 @@ public class TeamProfileRequest {
   @NotNull(message = "필수 정보입니다.")
   private Integer gender;
 
-  @Size(min = 2, max = 5, message = "2명부터 5명까지 가능합니다.")
+  @Min(value = 2, message = "2명 이상부터 가능합니다.")
+  @Max(value = 2, message = "5명 이하까지 가능합니다.")
   @NotNull(message = "필수 정보입니다.")
   private Integer memberCount;
 
