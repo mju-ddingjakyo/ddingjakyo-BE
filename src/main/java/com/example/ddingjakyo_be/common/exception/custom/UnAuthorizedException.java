@@ -3,9 +3,9 @@ package com.example.ddingjakyo_be.common.exception.custom;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class NoAuthException extends RuntimeException{
+public class UnAuthorizedException extends RuntimeException{
 
-  public NoAuthException(String message){
+  public UnAuthorizedException(String message){
     super(message);
   }
 }

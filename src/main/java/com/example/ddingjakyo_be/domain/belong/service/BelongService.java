@@ -30,16 +30,18 @@ public class BelongService {
 
   public void update(Set<Member> members, Team team) {
     // 해당 팀에 속한 모든 Belong 엔티티 가져오기
-    List<Belong> belongs = belongRepository.findAllByTeam(team).orElseThrow(IllegalArgumentException::new);
+    List<Belong> belongs = belongRepository.findAllByTeam(team)
+        .orElseThrow(IllegalArgumentException::new);
     // 기존의 모든 Belong 삭제
     belongRepository.deleteAll(belongs);
     // 연관관계 다시 설정
     doBelong(members, team);
   }
 
-  public Team findTeamByMemberId(Long memberId){
+  public Team findTeamByMemberId(Long memberId) {
     Member member = memberService.findMemberById(memberId);
-    Belong belong = belongRepository.findByMember(member).orElseThrow(()-> new IllegalArgumentException("이 멤버는 팀에 속하지 않았습니다."));
+    Belong belong = belongRepository.findByMember(member)
+        .orElseThrow(() -> new IllegalArgumentException("이 멤버는 팀에 속하지 않았습니다."));
     return belong.getTeam();
   }
 }

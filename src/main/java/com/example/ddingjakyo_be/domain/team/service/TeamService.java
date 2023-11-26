@@ -1,6 +1,6 @@
 package com.example.ddingjakyo_be.domain.team.service;
 
-import com.example.ddingjakyo_be.common.exception.custom.NoAuthException;
+import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
@@ -100,7 +100,7 @@ public class TeamService {
 
   public void isLeader(Team team, Long authId) {
     if (!Objects.equals(team.getLeaderId(), authId)) {
-      throw new NoAuthException("리더가 아닙니다.");
+      throw new UnAuthorizedException("리더가 아닙니다.");
     }
   }
 
@@ -117,7 +117,7 @@ public class TeamService {
 
   private void validateUserCreatedTeam(Long authId) {
     teamRepository.findByLeaderId(authId).ifPresent(team -> {
-      throw new NoAuthException("한 명의 유저는 한 팀만 생성할 수 있습니다.");
+      throw new UnAuthorizedException("한 명의 유저는 한 팀만 생성할 수 있습니다.");
     });
   }
 

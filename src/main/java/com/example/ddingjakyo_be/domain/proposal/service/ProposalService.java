@@ -3,7 +3,7 @@ package com.example.ddingjakyo_be.domain.proposal.service;
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
-import com.example.ddingjakyo_be.common.exception.custom.NoAuthException;
+import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.domain.Member;
 import com.example.ddingjakyo_be.domain.proposal.constant.ProposalStatus;
@@ -106,18 +106,18 @@ public class ProposalService {
   }
 
   private void isProposal(Team senderTeam) {
-    proposalRepository.findBySenderTeam(senderTeam).ifPresent(team -> {throw new NoAuthException("매칭 신청은 동시에 한 팀만 가능합니다");});
+    proposalRepository.findBySenderTeam(senderTeam).ifPresent(team -> {throw new UnAuthorizedException("매칭 신청은 동시에 한 팀만 가능합니다");});
   }
 
   private void checkEqualMemberCount(Team senderTeam, Team receiverTeam) {
     if (!Objects.equals(senderTeam.getMemberCount(), receiverTeam.getMemberCount())) {
-      throw new NoAuthException("같은 인원 수의 팀에만 신청 가능합니다.");
+      throw new UnAuthorizedException("같은 인원 수의 팀에만 신청 가능합니다.");
     }
   }
 
   private void checkEqualGender(Team senderTeam, Team receiverTeam) {
     if (!Objects.equals(senderTeam.getGender(), receiverTeam.getGender())) {
-      throw new NoAuthException("다른 성별의 팀에만 신청 가능합니다.");
+      throw new UnAuthorizedException("다른 성별의 팀에만 신청 가능합니다.");
     }
   }
 
