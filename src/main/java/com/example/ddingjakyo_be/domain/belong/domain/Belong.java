@@ -37,6 +37,4 @@ public class Belong {
     belong.team = team;
     return belong;
   }
-
-
 }
