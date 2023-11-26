@@ -1,7 +1,9 @@
 package com.example.ddingjakyo_be.domain.proposal.service;
 
+import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
+import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
-import com.example.ddingjakyo_be.common.exception.NoAuthException;
+import com.example.ddingjakyo_be.common.exception.custom.NoAuthException;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.domain.Member;
 import com.example.ddingjakyo_be.domain.proposal.constant.ProposalStatus;
@@ -49,7 +51,7 @@ public class ProposalService {
   public ProposalResponse getSendProposal(Long authId) {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team)
-        .orElseThrow(() -> new IllegalArgumentException("신청한 팀이 없습니다"));
+        .orElseThrow(() -> new EmptyException("신청한 팀이 없습니다"));
     GetOneTeamResponse getOneTeamResponse = teamService.getOneTeam(proposal.getReceiverTeam().getId());
     return ProposalResponse.from(proposal, getOneTeamResponse);
   }
@@ -82,7 +84,7 @@ public class ProposalService {
     Team team = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     teamService.isLeader(team, matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(team)
-        .orElseThrow(()-> new IllegalArgumentException("매칭 신청한 팀이 아닙니다."));
+        .orElseThrow(()-> new TeamNotFoundException("매칭 수락한 팀이 조회되지 않습니다."));
     proposal.approveProposal();
     proposal.getReceiverTeam().completeMatching();
     proposal.getSenderTeam().completeMatching();
@@ -92,7 +94,7 @@ public class ProposalService {
   public void rejectMatching(MatchingResultRequest matchingResultRequest) {
     Team senderTeam = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(senderTeam)
-        .orElseThrow(()-> new IllegalArgumentException("매칭 신청한 팀이 아닙니다."));
+        .orElseThrow(()-> new TeamNotFoundException("매칭 거부한 팀이 조회되지 않습니다."));
     proposal.rejectProposal();
   }
 
@@ -121,7 +123,7 @@ public class ProposalService {
 
   private void checkEmpty(List<Proposal> proposals) {
     if(proposals.isEmpty()){
-      throw new IllegalArgumentException("팀이 조회되지 않습니다.");
+      throw new EmptyException("팀이 조회되지 않습니다.");
     }
   }
 }

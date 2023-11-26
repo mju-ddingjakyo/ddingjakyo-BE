@@ -1,17 +1,18 @@
 package com.example.ddingjakyo_be.domain.team.service;
 
+import com.example.ddingjakyo_be.common.exception.custom.NoAuthException;
+import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
-import com.example.ddingjakyo_be.common.exception.NoAuthException;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.domain.member.domain.Member;
 import com.example.ddingjakyo_be.domain.member.service.MemberService;
 import com.example.ddingjakyo_be.domain.team.constant.MatchStatus;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
-import com.example.ddingjakyo_be.domain.team.repository.TeamRepository;
 import com.example.ddingjakyo_be.domain.team.controller.dto.request.TeamProfileRequest;
 import com.example.ddingjakyo_be.domain.team.controller.dto.response.GetAllTeamResponse;
 import com.example.ddingjakyo_be.domain.team.controller.dto.response.GetOneTeamResponse;
+import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.team.repository.TeamRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -88,7 +89,7 @@ public class TeamService {
 
   public Team findTeamById(Long teamId) {
     return teamRepository.findById(teamId)
-        .orElseThrow(() -> new IllegalArgumentException("팀을 찾을 수 없습니다."));
+        .orElseThrow(() -> new TeamNotFoundException("팀을 찾을 수 없습니다."));
   }
 
   public List<Member> findMembersByTeam(Team team) {

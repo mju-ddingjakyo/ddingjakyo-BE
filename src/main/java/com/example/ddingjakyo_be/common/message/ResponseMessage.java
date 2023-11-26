@@ -6,19 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ResponseMessage {
 
   private ResponseStatus responseStatus;
   private String resultMessage;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Object data;
-
-  @Builder
-  private ResponseMessage(ResponseStatus responseStatus, String resultMessage, Object data) {
-    this.responseStatus = responseStatus;
-    this.resultMessage = resultMessage;
-    this.data = data;
-  }
 
   public static ResponseMessage of(ResponseStatus responseStatus, Object data) {
     return ResponseMessage.builder()
