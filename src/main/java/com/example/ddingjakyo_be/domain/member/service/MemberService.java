@@ -103,11 +103,11 @@ public class MemberService {
     Optional<Member> member = memberRepository.findMemberByEmail(email);
 
     if (member.isEmpty()) {
-      success = false;
-      message = "중복된 이메일입니다.";
-    } else {
       success = true;
       message = "사용 가능한 이메일입니다.";
+    } else {
+      success = false;
+      message = "중복된 이메일입니다.";
     }
 
     return EmailConfirmResponse.of(success, message);
