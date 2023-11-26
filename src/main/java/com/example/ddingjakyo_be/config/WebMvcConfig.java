@@ -12,16 +12,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(new LogInCheckInterceptor())
-        .addPathPatterns("/**") // 모든 URI에서 인터셉터 실행
-        .excludePathPatterns("/api/log*", "/api/register", "/api/email*",
-            "/api/email_certification/confirm",
-            "/api/teams",
-            "/api/email_certification/duplicated*"); // login, logout, 회원가입, 이메일 인증, 전체 팀 조회 URI는 인터셉터 실행에서 제외
+            .addPathPatterns("/**") // 모든 URI에서 인터셉터 실행
+            .excludePathPatterns("/api/log*", "/api/register", "/api/email*",
+                    "/api/email_certification/confirm",
+                    "/api/teams",
+                    "/api/email_certification/duplicated*"); // login, logout, 회원가입, 이메일 인증, 전체 팀 조회 URI는 인터셉터 실행에서 제외
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://localhost:3000/**")
-        .allowCredentials(true).allowedHeaders("*").allowedMethods("*");
+    registry.addMapping("/**")
+            .allowedOriginPatterns("*")
+            .allowCredentials(true)
+            .allowedHeaders("*")
+            .allowedMethods("*");
   }
 }
