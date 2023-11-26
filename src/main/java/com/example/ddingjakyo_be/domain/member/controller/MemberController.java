@@ -1,6 +1,8 @@
 package com.example.ddingjakyo_be.domain.member.controller;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
+import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
+import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProfileRequest;
@@ -116,6 +118,7 @@ public class MemberController {
     ResponseMessage responseMessage;
     memberService.createMemberProfile(memberId, memberProfileRequest);
     responseMessage = ResponseMessage.of(ResponseStatus.OK);
+    System.out.println("response: " + responseMessage);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
@@ -162,8 +165,9 @@ public class MemberController {
     // 멤버 프로필 필수 정보인 닉네임, 전공, 소개가 없으면 프로필을 생성하지 않았다는 메시지 반환
     if (memberResponse.getNickname() == null || memberResponse.getMajor() == null
         || memberResponse.getIntroduction() == null) {
-      responseMessage = ResponseMessage.of(ResponseStatus.PROFILE_NOT_FOUND);
-      httpStatus = HttpStatus.BAD_REQUEST;
+//      responseMessage = ResponseMessage.of(ResponseStatus.PROFILE_NOT_FOUND);
+//      httpStatus = HttpStatus.BAD_REQUEST;
+      throw new MemberNotFoundException();
     } else {
       responseMessage = ResponseMessage.of(ResponseStatus.OK);
       httpStatus = HttpStatus.OK;

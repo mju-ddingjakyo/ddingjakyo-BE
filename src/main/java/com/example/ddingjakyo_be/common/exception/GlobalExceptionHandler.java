@@ -2,7 +2,12 @@ package com.example.ddingjakyo_be.common.exception;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
+<<<<<<< Updated upstream
 import com.example.ddingjakyo_be.common.exception.custom.NoAuthException;
+=======
+import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
+import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
+>>>>>>> Stashed changes
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
 import org.springframework.http.HttpStatus;
@@ -49,6 +54,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(EmptyException.class)
   public ResponseEntity<ResponseMessage> EmptyException() {
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.IS_EMPTY), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MemberNotFoundException.class)
+  public ResponseEntity<ResponseMessage> MemberNotFoundException() {
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.MEMBER_NOT_FOUND),
+        HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(TeamNotFoundException.class)
