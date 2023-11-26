@@ -1,12 +1,16 @@
 package com.example.ddingjakyo_be.domain.member.service;
 
 import com.example.ddingjakyo_be.aws.S3Service;
+import com.example.ddingjakyo_be.domain.belong.domain.Belong;
+import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProfileRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.domain.member.domain.Member;
 import com.example.ddingjakyo_be.domain.member.repository.MemberRepository;
+import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.team.service.TeamService;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +32,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
   private final S3Service s3Service;
+//  private final BelongService belongService;
 
   public MemberResponse login(final String email, final String password) {
     Member member = memberRepository.findMemberByEmail(email)
@@ -87,9 +92,22 @@ public class MemberService {
   }
 
   public Set<Member> findMembersByEmails(final List<String> emails) {
+//    for (String email : emails) {
+//      Member member = memberRepository.findMemberByEmail(email)
+//          .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
+//      Long id = member.getId();
+//      // 멤버로 현재 소속된 팀 찾기
+////      Team team = belongService.findTeamByMemberId(id);
+//
+//      // 초대할 멤버가 속한 팀의 상태가 "매칭 대기"인가?
+//      //
+//
+//    }
+
     return emails.stream()
         .map(email -> memberRepository.findMemberByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("이메일이 틀렸습니다.")))
+            .orElseThrow(() -> new IllegalArgumentException("이메일이 틀렸습니다."))
+        )
         .collect(Collectors.toSet());
   }
 
