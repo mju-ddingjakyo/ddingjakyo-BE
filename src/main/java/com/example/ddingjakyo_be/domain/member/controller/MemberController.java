@@ -9,6 +9,7 @@ import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProf
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.EmailConfirmResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
+import com.example.ddingjakyo_be.domain.member.controller.dto.response.SessionInfoResponse;
 import com.example.ddingjakyo_be.domain.member.service.EmailService;
 import com.example.ddingjakyo_be.domain.member.service.MemberService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.EmailConfirmRequest;
@@ -50,7 +51,14 @@ public class MemberController {
       HttpSession session = request.getSession();
       session.setAttribute("memberId", member.getId());
       session.setMaxInactiveInterval(30 * 60); // 세션 유지 시간은 30분으로설정
-      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
+
+      // 세션에서 필요한 정보만 추출
+      String sessionId = session.getId();
+
+      // 전송 가능한 객체 생성
+      SessionInfoResponse sessionInfo = new SessionInfoResponse(sessionId, member.getId());
+
+      ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, sessionInfo);
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
