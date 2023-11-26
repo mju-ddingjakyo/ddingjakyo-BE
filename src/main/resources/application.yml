@@ -13,11 +13,6 @@ spring:
         show_sql: true
         format_sql: true
 
-server:
-  servlet:
-    session:
-      cookie:
-        http-only: false
 ---
 cloud:
   aws:
