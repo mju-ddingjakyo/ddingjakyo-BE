@@ -18,7 +18,7 @@ server:
     session:
       cookie:
         same-site: "none"
-        secure: false
+        secure: true
 ---
 cloud:
   aws:
