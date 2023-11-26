@@ -77,36 +77,35 @@ public class MemberController {
   public ResponseEntity<ResponseMessage> certify(
       @RequestParam(value = "email", required = false) final String email) throws Exception {
     EmailConfirmResponse response = emailService.sendEmail(email);
-    return createResponse(response);
+    return createEmailConfirmResponse(response);
   }
 
   @PostMapping("/email_certification/confirm")
   public ResponseEntity<ResponseMessage> confirm(
       final @RequestBody EmailConfirmRequest emailConfirmRequest) {
     EmailConfirmResponse response = emailService.checkVerificationCode(emailConfirmRequest);
-    return createResponse(response);
+    return createEmailConfirmResponse(response);
   }
 
   @GetMapping("/member/my")
   public ResponseEntity<ResponseMessage> getMyPage(
       @SessionAttribute("memberId") final Long myAuthId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(myAuthId);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberResponse);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return createProfileResponse(memberResponse);
   }
 
   @GetMapping("/member/{memberId}")
   public ResponseEntity<ResponseMessage> getMemberById(@PathVariable final Long memberId) {
     MemberResponse memberResponse = memberService.getMemberProfileById(memberId);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberResponse);
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    return createProfileResponse(memberResponse);
   }
 
   @GetMapping("/member")
-  public ResponseEntity<ResponseMessage> getMemberById(
+  public ResponseEntity<ResponseMessage> getMemberByEmail(
       @RequestParam(value = "email", required = false) final String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
-    ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
+    ResponseMessage responseMessage;
+    responseMessage = ResponseMessage.of(ResponseStatus.OK, memberProfile);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
@@ -139,7 +138,8 @@ public class MemberController {
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
 
-  private ResponseEntity<ResponseMessage> createResponse(final EmailConfirmResponse response) {
+  private ResponseEntity<ResponseMessage> createEmailConfirmResponse(
+      final EmailConfirmResponse response) {
     ResponseMessage responseMessage;
     HttpStatus httpStatus;
 
@@ -148,6 +148,24 @@ public class MemberController {
       httpStatus = HttpStatus.BAD_REQUEST;
     } else {
       responseMessage = ResponseMessage.of(ResponseStatus.OK, response);
+      httpStatus = HttpStatus.OK;
+    }
+
+    return new ResponseEntity<>(responseMessage, httpStatus);
+  }
+
+  private ResponseEntity<ResponseMessage> createProfileResponse(
+      final MemberResponse memberResponse) {
+    ResponseMessage responseMessage;
+    HttpStatus httpStatus;
+
+    // 멤버 프로필 필수 정보인 닉네임, 전공, 소개가 없으면 프로필을 생성하지 않았다는 메시지 반환
+    if (memberResponse.getNickname() == null || memberResponse.getMajor() == null
+        || memberResponse.getIntroduction() == null) {
+      responseMessage = ResponseMessage.of(ResponseStatus.PROFILE_NOT_FOUND);
+      httpStatus = HttpStatus.BAD_REQUEST;
+    } else {
+      responseMessage = ResponseMessage.of(ResponseStatus.OK);
       httpStatus = HttpStatus.OK;
     }
 
