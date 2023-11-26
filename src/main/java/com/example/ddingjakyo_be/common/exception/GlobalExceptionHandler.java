@@ -53,6 +53,12 @@ public class GlobalExceptionHandler {
         HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(MemberNotFoundException.class)
+  public ResponseEntity<ResponseMessage> MemberNotFoundException() {
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.MEMBER_NOT_FOUND),
+        HttpStatus.NOT_FOUND);
+  }
+
   @ExceptionHandler(TeamNotFoundException.class)
   public ResponseEntity<ResponseMessage> TeamNotFoundException() {
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.TEAM_NOT_FOUND),
