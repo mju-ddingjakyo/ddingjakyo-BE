@@ -51,7 +51,6 @@ public class MemberController {
       session.setAttribute("memberId", member.getId());
       session.setMaxInactiveInterval(30 * 60); // 세션 유지 시간은 30분으로설정
 
-
       ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
@@ -90,6 +89,13 @@ public class MemberController {
     return createEmailConfirmResponse(response);
   }
 
+  @PostMapping("/email_certification/duplicated")
+  public ResponseEntity<ResponseMessage> duplicated(
+      @RequestParam(value = "email", required = false) final String email) {
+//    EmailConfirmResponse response = memberService.()
+    return null;
+  }
+
   @GetMapping("/member/my")
   public ResponseEntity<ResponseMessage> getMyPage(
       @SessionAttribute("memberId") final Long myAuthId) {
@@ -103,8 +109,8 @@ public class MemberController {
     return createProfileResponse(memberResponse);
   }
 
-  @GetMapping("/member")
-  public ResponseEntity<ResponseMessage> getMemberByEmail(
+  @GetMapping("/member/search")
+  public ResponseEntity<ResponseMessage> searchMemberByEmail(
       @RequestParam(value = "email", required = false) final String email) {
     MemberProfileResponse memberProfile = memberService.getMemberProfileByEmail(email);
     ResponseMessage responseMessage;

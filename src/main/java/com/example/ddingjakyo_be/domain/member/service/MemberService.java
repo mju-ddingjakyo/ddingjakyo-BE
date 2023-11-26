@@ -1,10 +1,12 @@
 package com.example.ddingjakyo_be.domain.member.service;
 
 import com.example.ddingjakyo_be.aws.S3Service;
+import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.domain.belong.domain.Belong;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProfileRequest;
+import com.example.ddingjakyo_be.domain.member.controller.dto.response.EmailConfirmResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.domain.member.domain.Member;
@@ -12,6 +14,7 @@ import com.example.ddingjakyo_be.domain.member.repository.MemberRepository;
 import com.example.ddingjakyo_be.domain.team.domain.Team;
 import com.example.ddingjakyo_be.domain.team.service.TeamService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Email;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -91,18 +94,29 @@ public class MemberService {
     memberRepository.delete(member);
   }
 
+  public EmailConfirmResponse checkDuplicatedEmail(final String email) {
+    boolean duplicated = false;
+    String message;
+    boolean success;
+
+    Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+
+    );
+
+
+
+    if (!duplicated) {
+      success = true;
+      message = "사용 가능한 이메일입니다.";
+    } else {
+      success = false;
+      message = "중복된 이메일입니다.";
+    }
+
+    return EmailConfirmResponse.of(success, message);
+  }
+
   public Set<Member> findMembersByEmails(final List<String> emails) {
-//    for (String email : emails) {
-//      Member member = memberRepository.findMemberByEmail(email)
-//          .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을 수 없습니다."));
-//      Long id = member.getId();
-//      // 멤버로 현재 소속된 팀 찾기
-////      Team team = belongService.findTeamByMemberId(id);
-//
-//      // 초대할 멤버가 속한 팀의 상태가 "매칭 대기"인가?
-//      //
-//
-//    }
 
     return emails.stream()
         .map(email -> memberRepository.findMemberByEmail(email)
