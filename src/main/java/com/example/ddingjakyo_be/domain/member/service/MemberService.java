@@ -117,21 +117,23 @@ public class MemberService {
 
   private String getUploadImageFileName(MemberProfileRequest memberProfileRequest) {
     String fileName = "";
-    for (MultipartFile multipartFile : memberProfileRequest.getImage()) {
-
-      if (multipartFile == null) {
-        break;
-      }
-      // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
-      fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-      // 파일데이터와 파일명 넘겨서 S3에 저장
-      try {
-        s3Service.upload(multipartFile, fileName);
-      } catch (IOException e) {
-        log.warn("이미지 업로드 실패");
-        throw new IllegalArgumentException("이미지 업로드 실패");
-      }
-    }
-    return fileName;
+    return "nullfile";
+//
+//    for (MultipartFile multipartFile : memberProfileRequest.getImage()) {
+//
+//      if (multipartFile == null) {
+//        break;
+//      }
+//      // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
+//      fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+//      // 파일데이터와 파일명 넘겨서 S3에 저장
+//      try {
+//        s3Service.upload(multipartFile, fileName);
+//      } catch (IOException e) {
+//        log.warn("이미지 업로드 실패");
+//        throw new IllegalArgumentException("이미지 업로드 실패");
+//      }
+//    }
+//    return fileName;
   }
 }

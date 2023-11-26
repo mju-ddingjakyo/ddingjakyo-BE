@@ -2,6 +2,7 @@ package com.example.ddingjakyo_be.common.exception;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
+import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
 import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
