@@ -15,7 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .addPathPatterns("/**") // 모든 URI에서 인터셉터 실행
         .excludePathPatterns("/api/log*", "/api/register", "/api/email*",
             "/api/email_certification/confirm",
-            "/api/teams", "/api/member/search*",
+            "/api/teams",
             "/api/email_certification/duplicated*"); // login, logout, 회원가입, 이메일 인증, 전체 팀 조회 URI는 인터셉터 실행에서 제외
   }
 
