@@ -30,7 +30,6 @@ public class EmailService {
   private final ResourceLoader resourceLoader;
   private final Map<String, String> authBoard = new ConcurrentHashMap<>();
   private static final String AUTH_CODE_PLACEHOLDER = "YOUR_AUTH_CODE";
-  private static final String verificationCode = createKey();
   private static final String emailDelimiter = "@";
   private static final String univDomain = "mju.ac.kr";
 
@@ -87,8 +86,8 @@ public class EmailService {
     } catch (IOException e) {
       System.out.println("File Read Error");
     }
-
-    String authCode = verificationCode;
+    // 인증할 때마다 새로운 인증 코드 생성
+    String authCode = createKey();
     // 멤버의 이메일 정보와 인증 코드를 저장
     authBoard.put(to, authCode);
     // YOUR_AUTH_CODE 부분을 인증 코드로 변경
