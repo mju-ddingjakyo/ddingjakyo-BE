@@ -1,9 +1,7 @@
 package com.example.ddingjakyo_be.domain.member.controller;
 
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
-import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
 import com.example.ddingjakyo_be.common.exception.custom.ProfileNotFoundException;
-import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProfileRequest;
