@@ -56,17 +56,17 @@ public class ProposalController {
   }
 
   @PatchMapping("/proposal")
-  public ResponseEntity<ResponseMessage> matchingResult(@RequestBody MatchingResultRequest matchingResultRequest) {
+  public ResponseEntity<ResponseMessage> matchingResult(@SessionAttribute("memberId") Long authId, @RequestBody MatchingResultRequest matchingResultRequest) {
     //프론트에서 수락한 팀 아이디를 받아온다.
     //수락, 거절 상태도 받아온다.
     if (matchingResultRequest.isMatchingResult()) {
       ApproveMatchingResponse approveMatchingResponse = proposalService.approveMatching(
-          matchingResultRequest);
+          matchingResultRequest, authId);
       ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK,
           approveMatchingResponse);
       return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
-    proposalService.rejectMatching(matchingResultRequest);
+    proposalService.rejectMatching(matchingResultRequest, authId);
     ResponseMessage responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }

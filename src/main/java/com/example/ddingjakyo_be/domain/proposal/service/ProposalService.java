@@ -2,21 +2,22 @@ package com.example.ddingjakyo_be.domain.proposal.service;
 
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
-import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
+import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.entity.Member;
 import com.example.ddingjakyo_be.domain.proposal.constant.ProposalStatus;
 import com.example.ddingjakyo_be.domain.proposal.controller.dto.request.MatchingRequest;
 import com.example.ddingjakyo_be.domain.proposal.controller.dto.request.MatchingResultRequest;
+import com.example.ddingjakyo_be.domain.proposal.controller.dto.response.ApproveMatchingResponse;
 import com.example.ddingjakyo_be.domain.proposal.controller.dto.response.ProposalResponse;
 import com.example.ddingjakyo_be.domain.proposal.controller.dto.response.ProposalsResponse;
 import com.example.ddingjakyo_be.domain.proposal.entity.Proposal;
+import com.example.ddingjakyo_be.domain.proposal.repository.ProposalRepository;
 import com.example.ddingjakyo_be.domain.team.controller.dto.response.GetOneTeamResponse;
 import com.example.ddingjakyo_be.domain.team.entity.Team;
 import com.example.ddingjakyo_be.domain.team.service.TeamService;
-import com.example.ddingjakyo_be.domain.proposal.controller.dto.response.ApproveMatchingResponse;
-import com.example.ddingjakyo_be.domain.proposal.repository.ProposalRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,8 @@ public class ProposalService {
     Team team = belongService.findTeamByMemberId(authId);
     Proposal proposal = proposalRepository.findBySenderTeam(team)
         .orElseThrow(() -> new EmptyException("신청한 팀이 없습니다"));
-    GetOneTeamResponse getOneTeamResponse = teamService.getOneTeam(proposal.getReceiverTeam().getId());
+    GetOneTeamResponse getOneTeamResponse = teamService.getOneTeam(
+        proposal.getReceiverTeam().getId());
     return ProposalResponse.from(proposal, getOneTeamResponse);
   }
 
@@ -64,7 +66,7 @@ public class ProposalService {
     List<MemberProfileResponse> membersProfile = getMembersProfile(team);
 
     return proposals.stream()
-        .map(proposal -> ProposalsResponse.from(proposal, membersProfile))
+        .map(proposal -> ProposalsResponse.from(proposal.getSenderTeam(), membersProfile))
         .toList();
   }
 
@@ -73,28 +75,31 @@ public class ProposalService {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllBySenderTeamOrReceiverTeamAndProposalStatus(team, team, ProposalStatus.APPROVED);
     checkEmpty(proposals);
-    List<MemberProfileResponse> membersProfile = getMembersProfile(team);
 
-    return proposals.stream()
-        .map(proposal -> ProposalsResponse.from(proposal, membersProfile))
-        .toList();
+    return getProposalsResponses(proposals, team);
   }
 
-  public ApproveMatchingResponse approveMatching(MatchingResultRequest matchingResultRequest) {
+  public ApproveMatchingResponse approveMatching(MatchingResultRequest matchingResultRequest,
+      Long authId) {
+    Team authTeam = belongService.findTeamByMemberId(authId);
+    teamService.isLeader(authTeam, authId);
+
     Team team = teamService.findTeamById(matchingResultRequest.getSendTeamId());
-    teamService.isLeader(team, matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(team)
-        .orElseThrow(()-> new TeamNotFoundException("매칭 수락한 팀이 조회되지 않습니다."));
+        .orElseThrow(() -> new TeamNotFoundException("매칭 수락한 팀이 조회되지 않습니다."));
     proposal.approveProposal();
     proposal.getReceiverTeam().completeMatching();
     proposal.getSenderTeam().completeMatching();
     return ApproveMatchingResponse.from(proposal);
   }
 
-  public void rejectMatching(MatchingResultRequest matchingResultRequest) {
+  public void rejectMatching(MatchingResultRequest matchingResultRequest, Long authId) {
+    Team authTeam = belongService.findTeamByMemberId(authId);
+    teamService.isLeader(authTeam, authId);
+
     Team senderTeam = teamService.findTeamById(matchingResultRequest.getSendTeamId());
     Proposal proposal = proposalRepository.findBySenderTeam(senderTeam)
-        .orElseThrow(()-> new TeamNotFoundException("매칭 거부한 팀이 조회되지 않습니다."));
+        .orElseThrow(() -> new TeamNotFoundException("매칭 거부한 팀이 조회되지 않습니다."));
     proposal.rejectProposal();
   }
 
@@ -105,8 +110,21 @@ public class ProposalService {
         .toList();
   }
 
+  private List<ProposalsResponse> getProposalsResponses(List<Proposal> proposals, Team team) {
+    List<ProposalsResponse> proposalsResponses = new ArrayList<>();
+    proposals.stream()
+        .filter(proposal -> team.equals(proposal.getSenderTeam()))
+        .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getReceiverTeam(), getMembersProfile(proposal.getReceiverTeam()))));
+    proposals.stream()
+        .filter(proposal -> team.equals(proposal.getReceiverTeam()))
+        .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getSenderTeam(), getMembersProfile(proposal.getSenderTeam()))));
+    return proposalsResponses;
+  }
+
   private void isProposal(Team senderTeam) {
-    proposalRepository.findBySenderTeam(senderTeam).ifPresent(team -> {throw new UnAuthorizedException("매칭 신청은 동시에 한 팀만 가능합니다");});
+    proposalRepository.findBySenderTeam(senderTeam).ifPresent(team -> {
+      throw new UnAuthorizedException("매칭 신청은 동시에 한 팀만 가능합니다");
+    });
   }
 
   private void checkEqualMemberCount(Team senderTeam, Team receiverTeam) {
@@ -122,7 +140,7 @@ public class ProposalService {
   }
 
   private void checkEmpty(List<Proposal> proposals) {
-    if(proposals.isEmpty()){
+    if (proposals.isEmpty()) {
       throw new EmptyException("팀이 조회되지 않습니다.");
     }
   }
