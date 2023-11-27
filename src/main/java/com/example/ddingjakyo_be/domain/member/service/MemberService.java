@@ -9,7 +9,6 @@ import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberPro
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
 import com.example.ddingjakyo_be.domain.member.entity.Member;
 import com.example.ddingjakyo_be.domain.member.repository.MemberRepository;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -66,11 +66,13 @@ public class MemberService {
     updateMemberProfile(memberProfileRequest, memberId);
   }
 
+  @Transactional(readOnly = true)
   public MemberResponse getMemberProfileById(final Long memberId) {
     Member member = findMemberById(memberId);
     return MemberResponse.from(member);
   }
 
+  @Transactional(readOnly = true)
   public MemberProfileResponse getMemberProfileByEmail(final String email) {
     Member member = memberRepository.findMemberByEmail(email)
         .orElseThrow(IllegalArgumentException::new);
@@ -114,6 +116,7 @@ public class MemberService {
     return EmailConfirmResponse.of(success, message);
   }
 
+  @Transactional(readOnly = true)
   public Set<Member> findMembersByEmails(final List<String> emails) {
 
     return emails.stream()
@@ -123,12 +126,15 @@ public class MemberService {
         .collect(Collectors.toSet());
   }
 
+  @Transactional(readOnly = true)
   public Member findMemberById(Long memberId) {
     return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
   }
 
   private String getUploadImageFileName(MemberProfileRequest memberProfileRequest) {
+
     String imageUrl = "";
+    
     if(memberProfileRequest.getProfileImage()==null){
       return null;
     }

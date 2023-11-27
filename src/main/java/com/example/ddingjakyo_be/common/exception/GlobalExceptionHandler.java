@@ -3,6 +3,7 @@ package com.example.ddingjakyo_be.common.exception;
 import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
 import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
+import com.example.ddingjakyo_be.common.exception.custom.ProfileNotFoundException;
 import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
 import com.example.ddingjakyo_be.common.message.ResponseMessage;
@@ -57,6 +58,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MemberNotFoundException.class)
   public ResponseEntity<ResponseMessage> MemberNotFoundException() {
     return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.MEMBER_NOT_FOUND),
+        HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(ProfileNotFoundException.class)
+  public ResponseEntity<ResponseMessage> ProfileNotFoundException() {
+    return new ResponseEntity<>(ResponseMessage.of(ResponseStatus.PROFILE_NOT_FOUND),
         HttpStatus.NOT_FOUND);
   }
 
