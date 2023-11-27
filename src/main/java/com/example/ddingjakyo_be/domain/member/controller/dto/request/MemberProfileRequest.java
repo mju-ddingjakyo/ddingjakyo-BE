@@ -33,7 +33,7 @@ public class MemberProfileRequest {
 
   private String mbti;
 
-  private List<MultipartFile> image;
+  private List<MultipartFile> profileImage;
 
   public Member toEntity(String filename) {
     return Member.builder()

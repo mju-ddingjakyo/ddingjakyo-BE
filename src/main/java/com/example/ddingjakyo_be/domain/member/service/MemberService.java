@@ -28,7 +28,6 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
   private final S3Service s3Service;
-//  private final BelongService belongService;
 
   public MemberResponse login(final String email, final String password) {
     Member member = memberRepository.findMemberByEmail(email)
@@ -42,7 +41,14 @@ public class MemberService {
     return MemberResponse.from(member);
   }
 
-  public void register(MemberAuthRequest memberAuthRequest) {
+  public boolean register(MemberAuthRequest memberAuthRequest) {
+    // 중복 이메일 검사
+    String email = memberAuthRequest.getEmail();
+    EmailConfirmResponse uniqueEmail = checkDuplicatedEmail(email);
+    if (!uniqueEmail.isSuccess()) { // 중복 이메일이 존재하면
+      return false;
+    }
+
     String password = memberAuthRequest.getPassword();
     // 비밀번호 암호화
     String encodedPassword = passwordEncoder.encode(password);
@@ -50,6 +56,7 @@ public class MemberService {
 
     Member member = memberAuthRequest.toEntity(encodedPassword, gender);
     memberRepository.save(member);
+    return true;
   }
 
   public void createMemberProfile(Long memberId, MemberProfileRequest memberProfileRequest) {
@@ -98,7 +105,7 @@ public class MemberService {
       message = "사용 가능한 이메일입니다.";
     } else {
       success = false;
-      message = "중복된 이메일입니다.";
+      message = "이미 사용 중인 이메일입니다.";
     }
 
     return EmailConfirmResponse.of(success, message);

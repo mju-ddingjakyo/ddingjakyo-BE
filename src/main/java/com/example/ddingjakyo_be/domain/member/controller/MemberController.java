@@ -77,7 +77,13 @@ public class MemberController {
   public ResponseEntity<ResponseMessage> register(
       final @RequestBody @Valid MemberAuthRequest memberAuthRequest) {
     ResponseMessage responseMessage;
-    memberService.register(memberAuthRequest);
+    boolean isDuplicatedEmail = memberService.register(memberAuthRequest);
+
+    if (isDuplicatedEmail) {
+      responseMessage = ResponseMessage.of(ResponseStatus.DUPLICATED_MEMBER);
+      return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
+    }
+
     responseMessage = ResponseMessage.of(ResponseStatus.OK);
     return new ResponseEntity<>(responseMessage, HttpStatus.OK);
   }
