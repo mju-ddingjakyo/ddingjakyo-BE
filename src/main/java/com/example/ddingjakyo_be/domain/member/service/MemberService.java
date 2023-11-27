@@ -10,14 +10,17 @@ import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberRes
 import com.example.ddingjakyo_be.domain.member.entity.Member;
 import com.example.ddingjakyo_be.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -46,7 +49,7 @@ public class MemberService {
     String email = memberAuthRequest.getEmail();
     EmailConfirmResponse uniqueEmail = checkDuplicatedEmail(email);
     if (!uniqueEmail.isSuccess()) { // 중복 이메일이 존재하면
-      return false;
+      return true;
     }
 
     String password = memberAuthRequest.getPassword();
@@ -56,7 +59,7 @@ public class MemberService {
 
     Member member = memberAuthRequest.toEntity(encodedPassword, gender);
     memberRepository.save(member);
-    return true;
+    return false;
   }
 
   public void createMemberProfile(Long memberId, MemberProfileRequest memberProfileRequest) {
@@ -126,23 +129,26 @@ public class MemberService {
 
   private String getUploadImageFileName(MemberProfileRequest memberProfileRequest) {
     String fileName = "";
-    return "nullfile";
-//
-//    for (MultipartFile multipartFile : memberProfileRequest.getImage()) {
-//
-//      if (multipartFile == null) {
-//        break;
-//      }
-//      // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
-//      fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-//      // 파일데이터와 파일명 넘겨서 S3에 저장
-//      try {
-//        s3Service.upload(multipartFile, fileName);
-//      } catch (IOException e) {
-//        log.warn("이미지 업로드 실패");
-//        throw new IllegalArgumentException("이미지 업로드 실패");
-//      }
-//    }
-//    return fileName;
+//    return "nullfile";
+    if(memberProfileRequest.getProfileImage()==null){
+      return null;
+    }
+
+    for (MultipartFile multipartFile : memberProfileRequest.getProfileImage()) {
+
+      if (multipartFile == null) {
+        break;
+      }
+      // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
+      fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+      // 파일데이터와 파일명 넘겨서 S3에 저장
+      try {
+        s3Service.upload(multipartFile, fileName);
+      } catch (IOException e) {
+        log.warn("이미지 업로드 실패");
+        throw new IllegalArgumentException("이미지 업로드 실패");
+      }
+    }
+    return fileName;
   }
 }
