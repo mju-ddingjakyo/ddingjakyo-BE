@@ -1,7 +1,7 @@
 package com.example.ddingjakyo_be.domain.member.controller.dto.request;
 
 import com.example.ddingjakyo_be.common.constant.Gender;
-import com.example.ddingjakyo_be.domain.member.domain.Member;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

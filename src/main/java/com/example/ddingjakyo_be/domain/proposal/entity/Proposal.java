@@ -1,8 +1,8 @@
-package com.example.ddingjakyo_be.domain.proposal.domain;
+package com.example.ddingjakyo_be.domain.proposal.entity;
 
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
 import com.example.ddingjakyo_be.domain.proposal.constant.ProposalStatus;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.team.entity.Team;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

@@ -1,6 +1,6 @@
 package com.example.ddingjakyo_be.domain.member.repository;
 
-import com.example.ddingjakyo_be.domain.member.domain.Member;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

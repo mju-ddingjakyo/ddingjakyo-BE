@@ -1,10 +1,10 @@
-package com.example.ddingjakyo_be.domain.team.domain;
+package com.example.ddingjakyo_be.domain.team.entity;
 
-import com.example.ddingjakyo_be.domain.belong.domain.Belong;
+import com.example.ddingjakyo_be.domain.belong.entity.Belong;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
 import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.domain.team.constant.MatchStatus;
-import com.example.ddingjakyo_be.domain.proposal.domain.Proposal;
+import com.example.ddingjakyo_be.domain.proposal.entity.Proposal;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

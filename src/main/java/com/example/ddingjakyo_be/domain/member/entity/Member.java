@@ -1,6 +1,6 @@
-package com.example.ddingjakyo_be.domain.member.domain;
+package com.example.ddingjakyo_be.domain.member.entity;
 
-import com.example.ddingjakyo_be.domain.belong.domain.Belong;
+import com.example.ddingjakyo_be.domain.belong.entity.Belong;
 import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.common.entity.BaseEntity;
 import jakarta.persistence.Column;

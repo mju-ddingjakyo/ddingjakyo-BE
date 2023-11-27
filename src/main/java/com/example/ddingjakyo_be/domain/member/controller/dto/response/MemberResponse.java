@@ -1,6 +1,6 @@
 package com.example.ddingjakyo_be.domain.member.controller.dto.response;
 
-import com.example.ddingjakyo_be.domain.member.domain.Member;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.example.ddingjakyo_be.domain.proposal.controller.dto.request;
 
 import com.example.ddingjakyo_be.domain.proposal.constant.ProposalStatus;
-import com.example.ddingjakyo_be.domain.proposal.domain.Proposal;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.proposal.entity.Proposal;
+import com.example.ddingjakyo_be.domain.team.entity.Team;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

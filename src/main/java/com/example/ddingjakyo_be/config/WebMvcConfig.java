@@ -19,12 +19,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
                     "/api/email_certification/duplicated*"); // login, logout, 회원가입, 이메일 인증, 전체 팀 조회 URI는 인터셉터 실행에서 제외
   }
 
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-            .allowedOriginPatterns("*")
-            .allowCredentials(true)
-            .allowedHeaders("*")
-            .allowedMethods("*");
-  }
+//  @Override
+//  public void addCorsMappings(CorsRegistry registry) {
+//    registry.addMapping("/**")
+//            .allowedOriginPatterns("*")
+//            .allowCredentials(true)
+//            .allowedHeaders("*")
+//            .allowedMethods("*");
+//  }
 }

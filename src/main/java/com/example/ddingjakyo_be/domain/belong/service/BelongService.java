@@ -1,10 +1,10 @@
 package com.example.ddingjakyo_be.domain.belong.service;
 
-import com.example.ddingjakyo_be.domain.belong.domain.Belong;
+import com.example.ddingjakyo_be.domain.belong.entity.Belong;
 import com.example.ddingjakyo_be.domain.belong.repository.BelongRepository;
-import com.example.ddingjakyo_be.domain.member.domain.Member;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
 import com.example.ddingjakyo_be.domain.member.service.MemberService;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.team.entity.Team;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;

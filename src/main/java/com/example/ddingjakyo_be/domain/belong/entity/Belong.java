@@ -1,7 +1,7 @@
-package com.example.ddingjakyo_be.domain.belong.domain;
+package com.example.ddingjakyo_be.domain.belong.entity;
 
-import com.example.ddingjakyo_be.domain.member.domain.Member;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
+import com.example.ddingjakyo_be.domain.team.entity.Team;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

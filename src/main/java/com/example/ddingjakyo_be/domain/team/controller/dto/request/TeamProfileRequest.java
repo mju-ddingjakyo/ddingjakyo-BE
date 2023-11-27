@@ -2,7 +2,7 @@ package com.example.ddingjakyo_be.domain.team.controller.dto.request;
 
 import com.example.ddingjakyo_be.common.constant.Gender;
 import com.example.ddingjakyo_be.domain.team.constant.MatchStatus;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
+import com.example.ddingjakyo_be.domain.team.entity.Team;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +26,7 @@ public class TeamProfileRequest {
   private Integer gender;
 
   @Min(value = 2, message = "2명 이상부터 가능합니다.")
-  @Max(value = 2, message = "5명 이하까지 가능합니다.")
+  @Max(value = 5, message = "5명 이하까지 가능합니다.")
   @NotNull(message = "필수 정보입니다.")
   private Integer memberCount;
 

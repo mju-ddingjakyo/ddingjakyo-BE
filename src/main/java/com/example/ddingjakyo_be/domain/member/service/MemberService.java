@@ -1,32 +1,23 @@
 package com.example.ddingjakyo_be.domain.member.service;
 
 import com.example.ddingjakyo_be.aws.S3Service;
-import com.example.ddingjakyo_be.common.constant.ResponseStatus;
 import com.example.ddingjakyo_be.common.exception.custom.MemberNotFoundException;
-import com.example.ddingjakyo_be.domain.belong.domain.Belong;
-import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberAuthRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.request.MemberProfileRequest;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.EmailConfirmResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberResponse;
-import com.example.ddingjakyo_be.domain.member.domain.Member;
+import com.example.ddingjakyo_be.domain.member.entity.Member;
 import com.example.ddingjakyo_be.domain.member.repository.MemberRepository;
-import com.example.ddingjakyo_be.domain.team.domain.Team;
-import com.example.ddingjakyo_be.domain.team.service.TeamService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Email;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional

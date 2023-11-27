@@ -1,7 +1,7 @@
 package com.example.ddingjakyo_be.domain.proposal.controller.dto.response;
 
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
-import com.example.ddingjakyo_be.domain.proposal.domain.Proposal;
+import com.example.ddingjakyo_be.domain.proposal.entity.Proposal;
 import com.example.ddingjakyo_be.domain.team.controller.dto.response.GetAllTeamResponse;
 import java.util.List;
 import lombok.Builder;

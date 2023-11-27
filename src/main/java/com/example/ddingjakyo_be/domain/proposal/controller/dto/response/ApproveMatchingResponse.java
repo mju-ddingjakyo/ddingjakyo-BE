@@ -1,6 +1,6 @@
 package com.example.ddingjakyo_be.domain.proposal.controller.dto.response;
 
-import com.example.ddingjakyo_be.domain.proposal.domain.Proposal;
+import com.example.ddingjakyo_be.domain.proposal.entity.Proposal;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
