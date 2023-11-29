@@ -2,7 +2,6 @@ package com.example.ddingjakyo_be.domain.proposal.service;
 
 import com.example.ddingjakyo_be.common.exception.custom.EmptyException;
 import com.example.ddingjakyo_be.common.exception.custom.TeamNotFoundException;
-import com.example.ddingjakyo_be.common.exception.custom.UnAuthorizedException;
 import com.example.ddingjakyo_be.domain.belong.service.BelongService;
 import com.example.ddingjakyo_be.domain.member.controller.dto.response.MemberProfileResponse;
 import com.example.ddingjakyo_be.domain.member.entity.Member;
@@ -40,8 +39,9 @@ public class ProposalService {
     Team receiverTeam = teamService.findTeamById(matchingRequest.getReceiveTeamId());
 
     isProposal(senderTeam);
-    checkEqualGender(senderTeam, receiverTeam);
+    checkNotEqualGender(senderTeam, receiverTeam);
     checkEqualMemberCount(senderTeam, receiverTeam);
+    checkNotEqualMember(senderTeam, receiverTeam);
     teamService.isLeader(senderTeam, authId);
 
     Proposal proposal = matchingRequest.toEntity(ProposalStatus.WAITING, senderTeam, receiverTeam);
@@ -75,8 +75,7 @@ public class ProposalService {
     Team team = belongService.findTeamByMemberId(authId);
     List<Proposal> proposals = proposalRepository.findAllBySenderTeamOrReceiverTeamAndProposalStatus(team, team, ProposalStatus.APPROVED);
     checkEmpty(proposals);
-
-    return getProposalsResponses(proposals, team);
+    return  getCompleteProposalsResponses(proposals, team);
   }
 
   public ApproveMatchingResponse approveMatching(MatchingResultRequest matchingResultRequest,
@@ -110,33 +109,46 @@ public class ProposalService {
         .toList();
   }
 
-  private List<ProposalsResponse> getProposalsResponses(List<Proposal> proposals, Team team) {
+  private List<ProposalsResponse> getCompleteProposalsResponses(List<Proposal> proposals, Team myTeam) {
     List<ProposalsResponse> proposalsResponses = new ArrayList<>();
     proposals.stream()
-        .filter(proposal -> team.equals(proposal.getSenderTeam()))
+        .filter(proposal -> myTeam.equals(proposal.getSenderTeam()))
+        .filter(proposal -> proposal.getProposalStatus().equals(ProposalStatus.APPROVED))
         .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getReceiverTeam(), getMembersProfile(proposal.getReceiverTeam()))));
     proposals.stream()
-        .filter(proposal -> team.equals(proposal.getReceiverTeam()))
+        .filter(proposal -> myTeam.equals(proposal.getReceiverTeam()))
+        .filter(proposal -> proposal.getProposalStatus().equals(ProposalStatus.APPROVED))
         .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getSenderTeam(), getMembersProfile(proposal.getSenderTeam()))));
     return proposalsResponses;
   }
 
   private void isProposal(Team senderTeam) {
     proposalRepository.findBySenderTeam(senderTeam).ifPresent(team -> {
-      throw new UnAuthorizedException("매칭 신청은 동시에 한 팀만 가능합니다");
+      throw new IllegalArgumentException("매칭 신청은 동시에 한 팀만 가능합니다");
     });
   }
 
   private void checkEqualMemberCount(Team senderTeam, Team receiverTeam) {
     if (!Objects.equals(senderTeam.getMemberCount(), receiverTeam.getMemberCount())) {
-      throw new UnAuthorizedException("같은 인원 수의 팀에만 신청 가능합니다.");
+      throw new IllegalArgumentException("같은 인원 수의 팀에만 신청 가능합니다.");
     }
   }
 
-  private void checkEqualGender(Team senderTeam, Team receiverTeam) {
+  private void checkNotEqualGender(Team senderTeam, Team receiverTeam) {
     if (Objects.equals(senderTeam.getGender(), receiverTeam.getGender())) {
-      throw new UnAuthorizedException("다른 성별의 팀에만 신청 가능합니다.");
+      throw new IllegalArgumentException("다른 성별의 팀에만 신청 가능합니다.");
     }
+  }
+
+  private void checkNotEqualMember(Team senderTeam, Team receiverTeam) {
+    List<Member> sendMembers = teamService.findMembersByTeam(senderTeam);
+    List<Member> receiveMembers = teamService.findMembersByTeam(receiverTeam);
+    boolean isNotDuplicate = sendMembers.stream()
+        .filter(receiveMembers::contains)
+        .toList().isEmpty();
+    if(!isNotDuplicate){
+      throw new IllegalArgumentException("매칭 팀 중 같은 멤버가 존재합니다.");
+    };
   }
 
   private void checkEmpty(List<Proposal> proposals) {
