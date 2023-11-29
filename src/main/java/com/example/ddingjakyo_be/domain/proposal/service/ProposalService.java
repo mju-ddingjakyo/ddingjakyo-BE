@@ -66,7 +66,7 @@ public class ProposalService {
     List<MemberProfileResponse> membersProfile = getMembersProfile(team);
 
     return proposals.stream()
-        .map(proposal -> ProposalsResponse.from(proposal.getSenderTeam(), membersProfile))
+        .map(proposal -> ProposalsResponse.of(proposal.getSenderTeam(), membersProfile))
         .toList();
   }
 
@@ -114,11 +114,19 @@ public class ProposalService {
     proposals.stream()
         .filter(proposal -> myTeam.equals(proposal.getSenderTeam()))
         .filter(proposal -> proposal.getProposalStatus().equals(ProposalStatus.APPROVED))
-        .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getReceiverTeam(), getMembersProfile(proposal.getReceiverTeam()))));
+        .forEach(proposal -> proposalsResponses.add(
+            ProposalsResponse.of(
+                proposal.getReceiverTeam(),
+                getMembersProfile(proposal.getReceiverTeam()),
+                proposal.getKakaoRoomURL())));
     proposals.stream()
         .filter(proposal -> myTeam.equals(proposal.getReceiverTeam()))
         .filter(proposal -> proposal.getProposalStatus().equals(ProposalStatus.APPROVED))
-        .forEach(proposal -> proposalsResponses.add(ProposalsResponse.from(proposal.getSenderTeam(), getMembersProfile(proposal.getSenderTeam()))));
+        .forEach(proposal -> proposalsResponses.add(ProposalsResponse.of(
+            proposal.getSenderTeam(),
+            getMembersProfile(proposal.getSenderTeam()),
+            proposal.getKakaoRoomURL()
+        )));
     return proposalsResponses;
   }
 
