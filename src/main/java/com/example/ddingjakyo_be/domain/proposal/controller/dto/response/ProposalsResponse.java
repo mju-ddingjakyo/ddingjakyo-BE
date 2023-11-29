@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProposalsResponse {
 
-  private GetAllTeamResponse sendTeam;
+  private GetAllTeamResponse team;
 
   @Builder
-  public ProposalsResponse(GetAllTeamResponse sendTeam) {
-    this.sendTeam = sendTeam;
+  public ProposalsResponse(GetAllTeamResponse team) {
+    this.team = team;
   }
 
   public static ProposalsResponse from(Team team, List<MemberProfileResponse> membersProfile) {
     return ProposalsResponse.builder()
-        .sendTeam(GetAllTeamResponse.of(team, membersProfile))
+        .team(GetAllTeamResponse.of(team, membersProfile))
         .build();
   }
 }
