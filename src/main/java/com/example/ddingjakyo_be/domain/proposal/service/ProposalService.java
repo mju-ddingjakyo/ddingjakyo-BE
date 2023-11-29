@@ -40,8 +40,9 @@ public class ProposalService {
     Team receiverTeam = teamService.findTeamById(matchingRequest.getReceiveTeamId());
 
     isProposal(senderTeam);
-    checkEqualGender(senderTeam, receiverTeam);
+    checkNotEqualGender(senderTeam, receiverTeam);
     checkEqualMemberCount(senderTeam, receiverTeam);
+    checkNotEqualMember(senderTeam, receiverTeam);
     teamService.isLeader(senderTeam, authId);
 
     Proposal proposal = matchingRequest.toEntity(ProposalStatus.WAITING, senderTeam, receiverTeam);
@@ -137,6 +138,17 @@ public class ProposalService {
     if (Objects.equals(senderTeam.getGender(), receiverTeam.getGender())) {
       throw new UnAuthorizedException("다른 성별의 팀에만 신청 가능합니다.");
     }
+  }
+
+  private void checkNotEqualMember(Team senderTeam, Team receiverTeam) {
+    List<Member> sendMembers = teamService.findMembersByTeam(senderTeam);
+    List<Member> receiveMembers = teamService.findMembersByTeam(receiverTeam);
+    boolean isNotDuplicate = sendMembers.stream()
+        .filter(receiveMembers::contains)
+        .toList().isEmpty();
+    if(!isNotDuplicate){
+      throw new IllegalArgumentException("매칭 팀 중 같은 멤버가 존재합니다.");
+    };
   }
 
   private void checkEmpty(List<Proposal> proposals) {
