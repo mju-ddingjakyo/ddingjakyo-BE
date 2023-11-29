@@ -134,7 +134,7 @@ public class ProposalService {
   }
 
   private void checkEqualGender(Team senderTeam, Team receiverTeam) {
-    if (!Objects.equals(senderTeam.getGender(), receiverTeam.getGender())) {
+    if (Objects.equals(senderTeam.getGender(), receiverTeam.getGender())) {
       throw new UnAuthorizedException("다른 성별의 팀에만 신청 가능합니다.");
     }
   }
